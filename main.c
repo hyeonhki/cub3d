@@ -1,5 +1,4 @@
 #include "./mlx/mlx.h"
-#include "./mlx_beta/mlx.h"
 
 int		main(void)
 {
