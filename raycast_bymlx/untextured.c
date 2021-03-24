@@ -14,7 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "./mlx/mlx.h"
+#include "../mlx/mlx.h"
 
 #define screenWidth 640
 #define screenHeight 480
