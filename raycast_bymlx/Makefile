@@ -1,3 +1,3 @@
 all:
-	gcc -L../mlx -lmlx -framework OpenGL -framework AppKit untextured.c
+	gcc -L../mlx -lmlx -framework OpenGL -framework AppKit textured.c
 	./a.out

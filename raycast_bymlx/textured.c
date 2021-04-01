@@ -16,8 +16,8 @@
 
 typedef struct s_img
 {
-	void *img;
-	int *data;
+	void *img; //
+	int *data; //스크린에 띄울 이미지
 
 	int size_l;
 	int bpp;
@@ -35,14 +35,14 @@ typedef struct s_info
 	void *mlx;
 	void *win;
 	t_img img;
-	int **buf;
+	int **buf; //스크린 버퍼
 	//텍스처 배열 선언
 	int texture[8][texHeight * texWidth]; //왜 8?? => 텍스처의 종류가 0~7까지 총 8개
 	double moveSpeed;
 	double rotSpeed;
 } t_info;
 
-void clac(t_info *info)
+void calc(t_info *info) //레이캐스팅 계산과정
 {
 	int x;
 
@@ -165,6 +165,18 @@ void clac(t_info *info)
 	}
 }
 
+void draw(t_info *info)
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			info->img.data[y * width + x] = info->buf[y][x];
+		}
+		mlx_put_image_to_window(info->mlx, info->win, info->img.img, 0, 0);
+	}
+}
+
 int worldMap[mapWidth][mapHeight] =
 	{
 		{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 7, 7, 7, 7, 7, 7, 7, 7},
@@ -192,6 +204,57 @@ int worldMap[mapWidth][mapHeight] =
 		{4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 6, 0, 6, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2},
 		{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3}};
 
+int main_loop(t_info *info)
+{
+	calc(info);
+	draw(info);
+	return (0);
+}
+
+int key_press(int key, t_info *info)
+{
+	if (key == KEY_W)
+	{
+		if (!worldMap[(int)(info->posX + info->dirX * info->moveSpeed)][(int)(info->posY)])
+			info->posX += info->dirX * info->moveSpeed;
+		if (!worldMap[(int)(info->posX)][(int)(info->posY + info->dirY * info->moveSpeed)])
+			info->posY += info->dirY * info->moveSpeed;
+	}
+	//move backwards if no wall behind you
+	if (key == KEY_S)
+	{
+		if (!worldMap[(int)(info->posX - info->dirX * info->moveSpeed)][(int)(info->posY)])
+			info->posX -= info->dirX * info->moveSpeed;
+		if (!worldMap[(int)(info->posX)][(int)(info->posY - info->dirY * info->moveSpeed)])
+			info->posY -= info->dirY * info->moveSpeed;
+	}
+	//rotate to the right
+	if (key == KEY_D)
+	{
+		//both camera direction and camera plane must be rotated
+		double oldDirX = info->dirX;
+		info->dirX = info->dirX * cos(-info->rotSpeed) - info->dirY * sin(-info->rotSpeed);
+		info->dirY = oldDirX * sin(-info->rotSpeed) + info->dirY * cos(-info->rotSpeed);
+		double oldPlaneX = info->planeX;
+		info->planeX = info->planeX * cos(-info->rotSpeed) - info->planeY * sin(-info->rotSpeed);
+		info->planeY = oldPlaneX * sin(-info->rotSpeed) + info->planeY * cos(-info->rotSpeed);
+	}
+	//rotate to the left
+	if (key == KEY_A)
+	{
+		//both camera direction and camera plane must be rotated
+		double oldDirX = info->dirX;
+		info->dirX = info->dirX * cos(info->rotSpeed) - info->dirY * sin(info->rotSpeed);
+		info->dirY = oldDirX * sin(info->rotSpeed) + info->dirY * cos(info->rotSpeed);
+		double oldPlaneX = info->planeX;
+		info->planeX = info->planeX * cos(info->rotSpeed) - info->planeY * sin(info->rotSpeed);
+		info->planeY = oldPlaneX * sin(info->rotSpeed) + info->planeY * cos(info->rotSpeed);
+	}
+	if (key == KEY_ESC)
+		exit(0);
+	return (0);
+}
+
 int main(void)
 {
 	t_info info;
@@ -206,15 +269,16 @@ int main(void)
 	info.moveSpeed = 0.05;
 	info.rotSpeed = 0.05;
 
-	//스크린 버퍼 배열
+	//스크린 버퍼 2차원 배열 할당
 	info.buf = (int **)malloc(sizeof(int *) * height);
 	int i = 0;
 	while (i < height)
 	{
-		info.buf[i] = (int *)malloc(sizeoof(int) * width);
+		info.buf[i] = (int *)malloc(sizeof(int) * width);
 		i++;
 	}
 	i = 0;
+	//스크린 버퍼 2차원 배열의 초기화
 	while (i < height)
 	{
 		int j = 0;
@@ -225,7 +289,7 @@ int main(void)
 		}
 		i++;
 	}
-	//텍스쳐 배열 선언
+	//구조체에 선언된 텍스처 배열 초기화
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < texHeight * texWidth; j++)
@@ -251,11 +315,11 @@ int main(void)
 			info.texture[7][texWidth * y + x] = 128 + 256 * 128 + 65536 * 128;				  //flat grey texture
 		}
 	}
-	info.win = mlx_new_window(info.mlx, width, height, "mlx");
+	info.win = mlx_new_window(info.mlx, width, height, "mlx"); //window 창 띄우기
 
-	info.img.img = mlx_new_image(info.mlx, width, height);
+	info.img.img = mlx_new_image(info.mlx, width, height); //이미지 구조체에 이미지 생성
 	info.img.data = (int *)mlx_get_data_addr(info.img.img, &info.img.bpp, &info.img.size_l, &info.img.endian);
-
+	//이미지 값 집어넣기
 	mlx_loop_hook(info.mlx, &main_loop, &info);
 	mlx_hook(info.win, X_EVENT_KEY_PRESS, 0, &key_press, &info);
 
