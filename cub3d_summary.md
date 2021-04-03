@@ -60,6 +60,10 @@ ___
 	- 에러 발생시 null 리턴
 	- mlx_A_to_image 함수들은 각각 xpm 배열데이터, xpm파일, png파일의 종류 별 이미지 변환.
 	- width와 hegith에는 너비와 높이를 저장할 int 형 변수의 주소를 넣어둔다.
+- ```c
+	void *mlx_destroy_image(void *mlx_ptr, void *img_ptr)
+	```
+	- __무엇일까?__
 ___
 ####4. loop & hook
 - ```c
