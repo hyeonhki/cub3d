@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   config.h                                           :+:      :+:    :+:   */
+/*   config.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonhki <hyeonhki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/06 09:56:29 by hyeonhki          #+#    #+#             */
-/*   Updated: 2021/04/06 09:56:31 by hyeonhki         ###   ########.fr       */
+/*   Created: 2021/04/06 15:26:05 by hyeonhki          #+#    #+#             */
+/*   Updated: 2021/04/06 15:26:05 by hyeonhki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef CONFIG_H
-#define CONFIG_H
+#include "config.h"
+#include "../game/game.h"
 
-typedef struct s_config
+void config_init(t_config *config)
 {
-	int		height;
-	int		width;
+	config->height = 480;
+	config->width = 640;
 
-	int		texnum;
-	int		texwidth;
-	int		texheight;
-	int		texsize;
+	config->texnum = 4;
+	config->texwidth = 64;
+	config->texheight = 64;
+	config->texsize = (config->texwidth) * (config->texheight);
 
-	double		movespeed;
-	double		rotspeed;
-}	t_config;
-
-void config_init(t_config *config);
-
-#endif
+	config->movespeed = 0.15;
+	config->rotspeed = 0.15;
+}

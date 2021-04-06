@@ -13,11 +13,17 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-#include "engine/engine.h"
+#include <stdlib.h>
+#include "config/config.h"
+#include "game/game.h"
 #include "keycode.h"
+#include "utils/utils.h"
+
+#define mapwidth 24
+#define mapheight 24
 
 int main_loop(t_info *info);
-int	key_press(int key, t_info *info);
+int	key_press(int key, t_info *info, t_config *config);
 
 
 

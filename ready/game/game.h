@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   engine.h                                           :+:      :+:    :+:   */
+/*   game.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyeonhki <hyeonhki@student.42seoul.kr      +#+  +:+       +#+        */
+/*   By: hyeonhki <hyeonhki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/06 09:31:11 by hyeonhki          #+#    #+#             */
 /*   Updated: 2021/04/06 09:31:34 by hyeonhki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EGINE.H
-# define ENGINE.H
+#ifndef GAME_H
+# define GAME_H
 
 # include <math.h>
 #include "../mlx/mlx.h"
 #include "../config/config.h"
+
+#define X_EVENT_KEY_PRESS	2
+#define X_EVENT_KEY_EXIT	17
 
 typedef struct s_img
 {
@@ -32,6 +35,9 @@ typedef struct s_img
 
 typedef struct s_info
 {
+	t_img img;
+	t_config config;
+
 	double posX;
 	double posY;
 
@@ -44,13 +50,8 @@ typedef struct s_info
 	void *mlx;
 	void *win;
 
-	t_img	img;
-
-	int **buf;
+	int **screen;
 	int **texture;
-
-	double moveSpeed;
-	double rotSpeed;
 
 }	t_info;
 

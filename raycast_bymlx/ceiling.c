@@ -372,6 +372,18 @@ int main_loop(t_info *info)
 	return (0);
 }
 
+void	ft_arraycpy(int *dest, int *src, unsigned int n)
+{
+	int i;
+	
+	i = 0;
+	while (i < n)
+	{
+		dest[i] = src[i];
+		i++;
+	}
+}
+
 void	load_image(t_info *info, int *texture, char *path, t_img *img)
 {
 
@@ -379,6 +391,7 @@ void	load_image(t_info *info, int *texture, char *path, t_img *img)
 	//xpm의 임지 변환, width와 height에 자동으로 너비와 높이가 저장된다.
 	img->data = (int *)mlx_get_data_addr(img->img, &img->bpp, &img->size_l, &img->endian);
 	//생성된 이미지의 정보를 리턴해서 수정 등에 용이하게
+	
 	for (int y = 0; y < img->img_height; y++)
 	{
 		for (int x = 0; x < img->img_width; x ++)
@@ -387,6 +400,7 @@ void	load_image(t_info *info, int *texture, char *path, t_img *img)
 			texture[img->img_width * y + x] = img->data[img->img_width * y + x];
 		}
 	}
+	//ft_arraycpy(texture, img->data, img->img_height * img->img_width);
 	mlx_destroy_image(info->mlx, img->img);
 }
 
@@ -448,6 +462,22 @@ int	key_press(int key, t_info *info)
 	return (0);
 }
 
+int **ft_2d_malloc(int row, int column)
+{
+	int **temp;
+	if (!(temp = (int **)malloc(sizeof(int *) * row)))
+		return (0);
+	int i;
+
+	i = 0 ;
+	while (i < row)
+	{
+		temp[i] = (int *)malloc(sizeof(int) * column);
+		i++;
+	}
+	return (temp);
+}
+
 int main(void)
 {
 	t_info info;
@@ -467,13 +497,14 @@ int main(void)
 			info.buf[i][j] = 0;
 		}
 	}
-	if (!(info.texture = (int **)malloc(sizeof(int *) * 8)))
-		return (-1);
-	for (int i = 0; i < 8; i++)
-	{
-		if (!(info.texture[i] = (int *)malloc(sizeof(int) * (texheight * texwidth))))
-			return (-1);
-	}
+	info.texture = ft_2d_malloc(8, texheight * texwidth);
+//	if (!(info.texture = (int **)malloc(sizeof(int *) * 8)))
+//		return (-1);
+//	for (int i = 0; i < 8; i++)
+//	{
+//		if (!(info.texture[i] = (int *)malloc(sizeof(int) * (texheight * texwidth))))
+//			return (-1);
+//	}
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < texheight * texwidth; j++)
