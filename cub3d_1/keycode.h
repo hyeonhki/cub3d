@@ -13,6 +13,10 @@
 #ifndef KEYCODE_H
 #define KEYCODE_H
 
+//EVENT
+#define X_EVENT_KEY_PRESS	2
+#define X_EVENT_KEY_EXIT	17
+
 //LETTERS
 
 #define KEY_A 0

@@ -71,8 +71,13 @@ int main(int argc, char *argv[])
 {
 	t_info	info;
 
-
 	//사용자의 위치 및 카메라평면은 어디서?
+	info.posX = 22.0;
+	info.posY = 11.5;
+	info.dirX = -1.0;
+	info.dirY= 0.0;
+	info.planeX = 0.0;
+	info.planeY = 0.66;
 	config_init(&info.config); //스크린 크기 등의 환경설정
 	game_init(&info); // 스크린
 	load_texture(&info);
