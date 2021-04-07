@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
+#include <stdlib.h>
 
 void	ft_arraycpy(int *dest, int *src, unsigned int n)
 {

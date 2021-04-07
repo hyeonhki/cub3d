@@ -13,6 +13,9 @@
 #ifndef GAME_H
 # define GAME_H
 
+#include "../../mlx/mlx.h"
+#include "../utils/utils.h"
+
 typedef struct s_config
 {
 	int height; //512
@@ -64,5 +67,7 @@ void	ready_screen(t_info *info);
 void	ready_texture(t_info *info);
 void	ready_image(t_info *info);
 void	game_init(t_info *info);
+
+//void	load_texture(t_info *info);
 
 #endif

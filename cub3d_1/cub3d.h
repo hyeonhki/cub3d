@@ -15,8 +15,8 @@
 
 # include "keycode.h"
 
-# include "game/game.h"
 # include "utils/utils.h"
+# include "game/game.h"
 # include "config/config.h"
 
 # include "../mlx/mlx.h"

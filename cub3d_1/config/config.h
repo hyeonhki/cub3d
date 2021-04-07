@@ -15,7 +15,6 @@
 
 # include "../game/game.h"
 
-
 void config_init(t_config *config);
 
 #endif
