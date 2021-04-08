@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef UTILS_H
-# define UTILS_H
+#define UTILS_H
 
 void	ft_arraycpy(int *dest, int *src, unsigned int n);
 int		 **ft_2d_malloc(int row, int column);

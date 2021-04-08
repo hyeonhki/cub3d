@@ -11,11 +11,13 @@
 /* ************************************************************************** */
 
 #ifndef GAME_H
-# define GAME_H
+#define GAME_H
 
 #include "../../mlx/mlx.h"
+#include "../config/config.h"
 #include "../utils/utils.h"
 
+/*
 typedef struct s_config
 {
 	int height; //512
@@ -26,6 +28,7 @@ typedef struct s_config
 	double	rotSpeed;
 
 }	t_config;
+*/
 
 typedef struct s_img
 {

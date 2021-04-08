@@ -23,11 +23,12 @@ void instead_mapparsing(t_info *info)
 	info->planeY = 0.66;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	t_info info;
 
 	config_init(&info.config);
+	config_map(argv[1]);
 	game_init(&info);
 	load_texture(&info);
 	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분
