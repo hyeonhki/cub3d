@@ -1,40 +1,39 @@
-#include "unistd.h"
-#include "stdio.h"
-#include "fcntl.h"
-#include "for_eval_git/get_next_line.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hyeonhki <hyeonhki@student.42seoul.kr>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/04/07 15:20:44 by hyeonhki          #+#    #+#             */
+/*   Updated: 2021/04/07 15:20:45 by hyeonhki         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-typedef struct s_info
-{
-	int a;
-	int b;
-	int c;
-}	t_info;
+#include "cub3d.h"
 
-void line_check(t_info *info, char *line)
+
+void instead_mapparsing(t_info *info)
 {
-	printf("line : %s", line);
+	info->posX = 22.0;
+	info->posY = 11.5;
+	info->dirX = -1.0;
+	info->dirY = 0.0;
+	info->planeX = 0.0;
+	info->planeY = 0.66;
 }
 
-void config_map(t_info *info, char *path)
-{
-	int fd;
-	int ret;
-	char *line;
-
-	printf("b\n");
-	fd = open(path, O_RDONLY);
-	while ((ret = get_next_line(fd, &line) > 0))
-	{
-		printf("ret : %d\n", ret);
-		printf("line : %s\n", line);
-	}
-}
-
-
-int main(int argc, char *argv[])
+int main(void)
 {
 	t_info info;
 
-	printf("a\n");
-	config_map(&info, argv[1]);
+	config_init(&info.config);
+	game_init(&info);
+	load_texture(&info);
+	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분
+	//기본 유지되는 hook (계산하고 그리기)
+	mlx_loop_hook(info.mlx, &main_loop, &info);
+	//이벤트를 받는 hook
+	mlx_hook(info.win, X_EVENT_KEY_PRESS, 0, &key_press, &info);
+	mlx_loop(info.mlx);
 }
