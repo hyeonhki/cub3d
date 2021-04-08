@@ -1,73 +1,40 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hyeonhki <hyeonhki@student.42seoul.kr>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/07 15:20:44 by hyeonhki          #+#    #+#             */
-/*   Updated: 2021/04/07 15:20:45 by hyeonhki         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "unistd.h"
+#include "stdio.h"
+#include "fcntl.h"
+#include "for_eval_git/get_next_line.h"
 
-
-#include "cub3d.h"
-
-void	load_image(t_info *info, int *texture, char *path, t_img *img)
+typedef struct s_info
 {
+	int a;
+	int b;
+	int c;
+}	t_info;
 
-	img->img = mlx_xpm_file_to_image(info->mlx, path, &img->img_width, &img->img_height);
-	//xpm의 임지 변환, width와 height에 자동으로 너비와 높이가 저장된다.
-	img->data = (int *)mlx_get_data_addr(img->img, &img->bpp, &img->size_l, &img->endian);
-	//생성된 이미지의 정보를 리턴해서 수정 등에 용이하게
-	
-	for (int y = 0; y < img->img_height; y++)
+void line_check(t_info *info, char *line)
+{
+	printf("line : %s", line);
+}
+
+void config_map(t_info *info, char *path)
+{
+	int fd;
+	int ret;
+	char *line;
+
+	printf("b\n");
+	fd = open(path, O_RDONLY);
+	while ((ret = get_next_line(fd, &line) > 0))
 	{
-		for (int x = 0; x < img->img_width; x ++)
-		{
-			//생성된 xpm데이터를 담은 이미지 데이터를 texture로 옮김
-			texture[img->img_width * y + x] = img->data[img->img_width * y + x];
-		}
+		printf("ret : %d\n", ret);
+		printf("line : %s\n", line);
 	}
-	//ft_arraycpy(texture, img->data, img->img_height * img->img_width);
-	mlx_destroy_image(info->mlx, img->img);
 }
 
-void	load_texture(t_info *info)
-{
-	//새로운 이미지 구조체를 생성
-	t_img	img;
-	load_image(info, info->texture[0], "textures/eagle.xpm", &img);
-	load_image(info, info->texture[1], "textures/redbrick.xpm", &img);
-	load_image(info, info->texture[2], "textures/purplestone.xpm", &img);
-	load_image(info, info->texture[3], "textures/greystone.xpm", &img);
-//	load_image(info, info->texture[4], "textures/bluestone.xpm", &img);
-//	load_image(info, info->texture[5], "textures/mossy.xpm", &img);
-//	load_image(info, info->texture[6], "textures/wood.xpm", &img);
-//	load_image(info, info->texture[7], "textures/colorstone.xpm", &img);
-}
 
-void instead_mapparsing(t_info *info)
-{
-	info->posX = 22.0;
-	info->posY = 11.5;
-	info->dirX = -1.0;
-	info->dirY = 0.0;
-	info->planeX = 0.0;
-	info->planeY = 0.66;
-}
-
-int main(void)
+int main(int argc, char *argv[])
 {
 	t_info info;
 
-	config_init(&info.config);
-	game_init(&info);
-	load_texture(&info);
-	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분
-	//기본 유지되는 hook (계산하고 그리기)
-	mlx_loop_hook(info.mlx, &main_loop, &info);
-	//이벤트를 받는 hook
-	mlx_hook(info.win, X_EVENT_KEY_PRESS, 0, &key_press, &info);
-	mlx_loop(info.mlx);
+	printf("a\n");
+	config_map(&info, argv[1]);
 }

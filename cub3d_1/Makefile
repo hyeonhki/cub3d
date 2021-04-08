@@ -3,5 +3,5 @@ all:
 	cub3d.c cub3d.h \
 	utils/utils.c \
 	config/config.c \
-	game/game.c
+	game/game.c game/texture_image.c
 	./a.out

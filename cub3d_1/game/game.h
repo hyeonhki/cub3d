@@ -68,6 +68,8 @@ void	ready_texture(t_info *info);
 void	ready_image(t_info *info);
 void	game_init(t_info *info);
 
-//void	load_texture(t_info *info);
+void	load_texture(t_info *info);
+void	load_image(t_info *info, int *texture, char *path, t_img *img);
+
 
 #endif

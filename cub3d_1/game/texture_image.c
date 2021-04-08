@@ -36,10 +36,10 @@ void	load_texture(t_info *info)
 {
 	//새로운 이미지 구조체를 생성
 	t_img	img;
-	load_image(info, info->texture[0], "../textures/eagle.xpm", &img);
-	load_image(info, info->texture[1], "../textures/redbrick.xpm", &img);
-	load_image(info, info->texture[2], "../textures/purplestone.xpm", &img);
-	load_image(info, info->texture[3], "../textures/greystone.xpm", &img);
+	load_image(info, info->texture[0], "textures/eagle.xpm", &img);
+	load_image(info, info->texture[1], "textures/redbrick.xpm", &img);
+	load_image(info, info->texture[2], "textures/purplestone.xpm", &img);
+	load_image(info, info->texture[3], "textures/greystone.xpm", &img);
 //	load_image(info, info->texture[4], "textures/bluestone.xpm", &img);
 //	load_image(info, info->texture[5], "textures/mossy.xpm", &img);
 //	load_image(info, info->texture[6], "textures/wood.xpm", &img);

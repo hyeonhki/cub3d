@@ -13,6 +13,8 @@
 #ifndef CONFIG_H
 # define CONFIG_H
 
+# include <unistd.h>
+# include <fcntl.h>
 # include "../game/game.h"
 
 void config_init(t_config *config);
