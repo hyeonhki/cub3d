@@ -16,7 +16,7 @@
 #include "keycode.h"
 
 #include "utils/utils.h"
-#include "config/config.h"
+#include "game/game.h"
 
 #include "../mlx/mlx.h"
 

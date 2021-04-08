@@ -12,7 +12,6 @@
 
 #include "cub3d.h"
 
-
 void instead_mapparsing(t_info *info)
 {
 	info->posX = 22.0;

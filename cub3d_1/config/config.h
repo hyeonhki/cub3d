@@ -13,10 +13,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "../game/game.h"
-#include <unistd.h>
-#include <fcntl.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 typedef struct s_config
 {

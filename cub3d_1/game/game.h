@@ -14,9 +14,8 @@
 #define GAME_H
 
 #include "../../mlx/mlx.h"
-#include "../config/config.h"
 #include "../utils/utils.h"
-
+#include "../config/config.h"
 /*
 typedef struct s_config
 {

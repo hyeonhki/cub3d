@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "config.h"
 #include "../gnl/get_next_line.h"
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 void maxlen_map(char *map, int *width, int *height)
 {
@@ -48,7 +46,7 @@ void parse_map(char *map)
 	int width;
 	int height;
 	maxlen_map(map, &width, &height);
-//	set_map(); //2차원 배열 할당 및 초기화
+//	set_map(width, height); //2차원 배열 할당 및 초기화
 //	map_init(); // 한줄씩 복사해서 붙여넣기
 }
 
