@@ -13,13 +13,12 @@
 #ifndef CUB3D_H
 #define CUB3D_H
 
-# include "keycode.h"
+#include "keycode.h"
 
-# include "utils/utils.h"
-# include "game/game.h"
-# include "config/config.h"
+#include "utils/utils.h"
+#include "config/config.h"
 
-# include "../mlx/mlx.h"
+#include "../mlx/mlx.h"
 
 #include <math.h>
 #include <string.h>

@@ -13,6 +13,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "../game/game.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
