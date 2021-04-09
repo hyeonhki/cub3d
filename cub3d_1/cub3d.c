@@ -14,7 +14,7 @@
 
 #define mapwidth 24
 #define mapheight 24
-
+/*
 int worldMap[mapwidth][mapheight]=
 {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -42,22 +42,22 @@ int worldMap[mapwidth][mapheight]=
   {1,0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,1,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
-
+*/
 int	key_press(int key, t_info *info)
 {
 	if (key == KEY_W)
 	{
-		if (!worldMap[(int)(info->posX + info->dirX * info->config.moveSpeed)][(int)(info->posY)])
+		if (!info->map.worldmap[(int)(info->posX + info->dirX * info->config.moveSpeed)][(int)(info->posY)])
 			info->posX += info->dirX * info->config.moveSpeed;
-		if (!worldMap[(int)(info->posX)][(int)(info->posY + info->dirY * info->config.moveSpeed)])
+		if (!info->map.worldmap[(int)(info->posX)][(int)(info->posY + info->dirY * info->config.moveSpeed)])
 			info->posY += info->dirY * info->config.moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (key == KEY_S)
 	{
-		if (!worldMap[(int)(info->posX - info->dirX * info->config.moveSpeed)][(int)(info->posY)])
+		if (!info->map.worldmap[(int)(info->posX - info->dirX * info->config.moveSpeed)][(int)(info->posY)])
 			info->posX -= info->dirX * info->config.moveSpeed;
-		if (!worldMap[(int)(info->posX)][(int)(info->posY - info->dirY * info->config.moveSpeed)])
+		if (!info->map.worldmap[(int)(info->posX)][(int)(info->posY - info->dirY * info->config.moveSpeed)])
 			info->posY -= info->dirY * info->config.moveSpeed;
 	}
 	//rotate to the right
@@ -239,7 +239,7 @@ void	calc(t_info *info)
 				mapY += stepY;
 				side = 1;
 			}
-			if (worldMap[mapX][mapY] > 0)
+			if (info->map.worldmap[mapX][mapY] > 0)
 				hit = 1;
 			//DDA완료를 통해 광선의 시작점에서 벽까지의 이동거리 계산완료
 		}
@@ -264,7 +264,7 @@ void	calc(t_info *info)
 			drawEnd = info->config.height - 1;
 
 		// 텍스터 계산
-		int texNum = worldMap[mapX][mapY] - 1;
+		int texNum = info->map.worldmap[mapX][mapY] - 1;
 		//1을 빼주는 이유는 지도에 0부터 8까지로 채워놨는데
 		//0은 없는 거고 1부터 8까지 텍스처라 1빼서 0부터 7까지로
 

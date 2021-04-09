@@ -14,8 +14,8 @@
 
 void instead_mapparsing(t_info *info)
 {
-	info->posX = 22.0;
-	info->posY = 11.5;
+	info->posX = 2.0; //22.0; 지도에서 row
+	info->posY = 8.0; //11.5; 지도에서 column;
 	info->dirX = -1.0;
 	info->dirY = 0.0;
 	info->planeX = 0.0;
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	t_info info;
 
 	config_init(&info.config);
-	config_map(argv[1]);
+	config_map(&info.map, argv[1]);
 	game_init(&info);
 	load_texture(&info);
 	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분

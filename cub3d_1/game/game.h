@@ -59,6 +59,7 @@ typedef struct s_info
 	
 	t_img	img;
 	t_config config;
+	t_map	map;
 	
 	int		**screen;
 	int		**texture;

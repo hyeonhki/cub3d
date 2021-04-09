@@ -17,18 +17,26 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "../gnl/get_next_line.h"
+#include "../utils/utils.h"
 
-typedef struct s_config
+
+typedef struct s_map
 {
-	int ren_width;
-	int ren_height;
-
+	int **worldmap;
 	char *no;
 	char *so;
 	char *we;
 	char *ea;
 	char *fl;
 	char *ce;
+} t_map;
+
+
+typedef struct s_config
+{
+	int ren_width;
+	int ren_height;
 
 	int height; //512
 	int width; //1024
@@ -40,6 +48,6 @@ typedef struct s_config
 }	t_config;
 
 void config_init(t_config *config);
-void config_map(char *path);
+void config_map(t_map *map, char *path);
 
 #endif

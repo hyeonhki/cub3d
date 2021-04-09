@@ -4,4 +4,4 @@ all:
 	utils/utils.c \
 	config/config.c config/map_parse.c gnl/get_next_line.c gnl/get_next_line_utils.c \
 	game/game.c game/texture_image.c 
-	./a.out maps/map1.cub
+	./a.out maps/map2.cub
