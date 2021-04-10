@@ -12,7 +12,7 @@
 
 #include "config.h"
 
-void maxlen_map(char *maptext, int *width, int *height)
+void maxlen_map(char *maptext, t_map *map)
 {
 	int len;
 	int max;
@@ -35,8 +35,8 @@ void maxlen_map(char *maptext, int *width, int *height)
 		len++;
 		i++;
 	}
-	*width = max;
-	*height = cnt;
+	map->column = max;
+	map->row = cnt;
 }
 
 void substitution_space(char **maptext)
@@ -54,8 +54,6 @@ void substitution_space(char **maptext)
 	}
 }
 
-
-
 void map_init(t_map *map, char *maptext, int height)
 {
 	int i;
@@ -71,32 +69,30 @@ void map_init(t_map *map, char *maptext, int height)
 		while (maptext[j] != '\n')
 		{
 			map->worldmap[i][k] = maptext[j] - '0';
-			printf("%d", map->worldmap[i][k]);
+			printf("%d", map->worldmap[i][k]); //추후 삭제
 			k++;
 			j++;
 		}
 		if (maptext[j] == '\n')
 		{
-			printf("\n");
+			printf("\n"); //추후삭제
 			j++;
 		}
 		i++;
 	}
 }
 
-void set_map(t_map *map, int width, int height)
+void set_map(t_map *map)
 {
-	map->worldmap = ft_2d_malloc(height, width);
-	ft_reset(map->worldmap, height, width);
+	map->worldmap = ft_2d_malloc(map->row, map->column);
+	ft_reset(map->worldmap, map->row, map->column);
 }
 
 void parse_map(t_map *map, char *maptext)
 {
-	int width;
-	int height;
-	maxlen_map(maptext, &width, &height);
-	set_map(map, width, height); //2차원 배열 할당 및 초기화/	
-	map_init(map, maptext, height); // 한줄씩 복사해서 붙여넣기
+	maxlen_map(maptext, map);
+	set_map(map); //2차원 배열 할당 및 초기화/	
+	map_init(map, maptext, map->row); // 한줄씩 복사해서 붙여넣기
 }
 
 void line_check(char *line, char **maptext)
@@ -122,6 +118,40 @@ void line_check(char *line, char **maptext)
 	}
 }
 
+int	is_player(int p)
+{
+	if (p == 'N' || p == 'S' || p == 'W' || p == 'E')
+		return (1);
+	else
+		return (0);
+}
+
+void player_init(t_map *map)
+{
+	int i;
+	int j;
+	i = 0;
+	while (i < map->row)
+	{
+		j = 0;
+		while (j < map->column)
+		{
+			if (is_player(map->worldmap[i][j]))
+			{
+				printf("\n%d %d\n", i , j);
+			//	map->player.x = i;
+			//	map->player.y = j;
+			//	map->player.dir = map->worldmap[i][j];
+			//	map->worldmap[i][j] = 0;
+			//	printf("\n %d %d\n", map->player.dir, map->worldmap[i][j]);
+				return ;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
 void config_map(t_map *map, char *path)
 {
 	int fd;
@@ -137,4 +167,5 @@ void config_map(t_map *map, char *path)
 	line_check(line, &maptext);
 	printf("%s\n",maptext);
 	parse_map(map, maptext);
+	player_init(map);
 }

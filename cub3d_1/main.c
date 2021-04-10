@@ -14,12 +14,38 @@
 
 void instead_mapparsing(t_info *info)
 {
-	info->posX = 2.0; //22.0; 지도에서 row
-	info->posY = 8.0; //11.5; 지도에서 column;
-	info->dirX = -1.0;
-	info->dirY = 0.0;
-	info->planeX = 0.0;
-	info->planeY = 0.66;
+	info->posX = 1.5; //22.0; 지도에서 row
+	info->posY = 7.5; //11.5; 지도에서 column;
+	info->dirX = -1.0; //-1.0;
+	info->dirY = 0.0; //0.0;
+	info->planeX = 0.0; //0.0
+	info->planeY = 0.66; //0.66;
+}
+
+void config_to_game(t_info *info, t_player *player)
+{
+	info->posX = player->x + 0.5;
+	info->posY = player->y + 0.5;
+	if (player->dir == 'N')
+	{
+		info->dirX = -1.0;
+		info->planeY = 0.66;
+	}
+	if (player->dir == 'S')
+	{
+		info->dirX = 1.0;
+		info->planeY = -0.66;
+	}
+	if (player->dir == 'E')
+	{
+		info->dirY = 1.0;
+		info->planeX = 0.66;
+	}
+	if (player->dir == 'W')
+	{
+		info->dirY = -1.0;
+		info->planeX = -0.66;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -28,6 +54,7 @@ int main(int argc, char *argv[])
 
 	config_init(&info.config);
 	config_map(&info.map, argv[1]);
+//	config_to_game(&info, &info.map.player);
 	game_init(&info);
 	load_texture(&info);
 	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분

@@ -20,16 +20,28 @@
 #include "../gnl/get_next_line.h"
 #include "../utils/utils.h"
 
+typedef struct s_player
+{
+	int	x;
+	int	y;
+	int dir;
+}	t_player;
+
 
 typedef struct s_map
 {
 	int **worldmap;
+
+	int	row;
+	int column;
 	char *no;
 	char *so;
 	char *we;
 	char *ea;
 	char *fl;
 	char *ce;
+
+	t_player player;
 } t_map;
 
 
