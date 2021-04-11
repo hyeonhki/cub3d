@@ -38,8 +38,9 @@ typedef struct s_map
 	char *so;
 	char *we;
 	char *ea;
-	char *fl;
-	char *ce;
+
+	int fl_color;
+	int ce_color;
 
 	t_player player;
 } t_map;

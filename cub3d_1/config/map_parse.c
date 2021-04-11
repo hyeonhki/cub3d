@@ -95,7 +95,35 @@ void parse_map(t_map *map, char *maptext)
 	map_init(map, maptext, map->row); // 한줄씩 복사해서 붙여넣기
 }
 
-void line_check(char *line, char **maptext)
+int	read_color(t_map *map, char *line)
+{
+	int color;
+	int rgb;
+	int i;
+
+	rgb = 0;
+	i = 0;
+	while (line[i] <= '0' || line[i] >= '9')
+		i++;
+	while (line[i] >= '0' && line[i] <= '9')
+		rgb = rgb * 10 + (line[i++] - '0');
+	color = rgb * 256 * 256;
+	while (line[i] <= '0' || line[i] >= '9')
+		i++;
+	rgb = 0;
+	while (line[i] >= '0' && line[i] <= '9')
+		rgb = rgb * 10 + (line[i++] - '0');
+	color += rgb * 256;
+	while (line[i] <= '0' || line[i] >= '9')
+		line++;
+	rgb = 0;
+	while (line[i] >= '0' && line[i] <= '9')
+		rgb = rgb * 10 + (line[i++] - '0');
+	color += rgb;
+	return (color);
+}
+
+void line_check(t_map *map,char *line, char **maptext)
 {
 	if (*line == 'R')
 		printf("R\n");
@@ -108,9 +136,9 @@ void line_check(char *line, char **maptext)
 	else if (*line == 'E')
 		printf("E\n");
 	else if (*line == 'F')
-		printf("F\n");
+		map->fl_color = read_color(map, line);
 	else if (*line == 'C')
-		printf("C\n");
+		map->ce_color = read_color(map, line);
 	else if (*line == ' ' || (*line >= '0' && *line <= '9'))
 	{
 		*maptext = ft_strjoin(*maptext, line);
@@ -120,7 +148,7 @@ void line_check(char *line, char **maptext)
 
 int	is_player(int p)
 {
-	if (p == 'N' || p == 'S' || p == 'W' || p == 'E')
+	if (p + '0' == 'N' || p + '0' == 'S' || p + '0' == 'W' || p + '0' == 'E')
 		return (1);
 	else
 		return (0);
@@ -138,12 +166,10 @@ void player_init(t_map *map)
 		{
 			if (is_player(map->worldmap[i][j]))
 			{
-				printf("\n%d %d\n", i , j);
-			//	map->player.x = i;
-			//	map->player.y = j;
-			//	map->player.dir = map->worldmap[i][j];
-			//	map->worldmap[i][j] = 0;
-			//	printf("\n %d %d\n", map->player.dir, map->worldmap[i][j]);
+				map->player.x = i;
+				map->player.y = j;
+				map->player.dir = map->worldmap[i][j] + '0';
+				map->worldmap[i][j] = 0;
 				return ;
 			}
 			j++;
@@ -162,9 +188,9 @@ void config_map(t_map *map, char *path)
 	maptext = 0;
 	fd = open(path, O_RDONLY);
 	while ((ret = get_next_line(fd, &line) > 0))
-		line_check(line, &maptext);
-	//두번 해야지 마지막줄까지나온다.
-	line_check(line, &maptext);
+		line_check(map, line, &maptext);
+	//두번 해야지 마지막줄까지나온다. ret=0 으로 EOF 되어서 반복문이 종료될 경우, line에 마지막 줄이 남아있기 때문에!
+	line_check(map, line, &maptext); //막줄 저장용
 	printf("%s\n",maptext);
 	parse_map(map, maptext);
 	player_init(map);

@@ -141,7 +141,9 @@ void	calc(t_info *info)
 			// floor
 			color = info->texture[floorTexture][info->config.texwidth * ty + tx];
 			color = (color >> 1) & 8355711; // make a bit darker
-
+			
+	//		color = 0xFF0000;
+			
 			info->screen[y][x] = color;
 
 			//ceiling (symmetrical, at screenHeight - y - 1 instead of y)
@@ -351,9 +353,13 @@ void	calc(t_info *info)
 			else floorTexture = 3;
 
 			//floor
-			info->screen[y][x] = (info->texture[floorTexture][info->config.texwidth * floorTexY + floorTexX] >> 1) & 8355711;
+			//이 부분의 입력을 통해 색깔을 변경할 수 있다.
+			info->screen[y][x] = info->map.fl_color;
+			//(info->texture[floorTexture][info->config.texwidth * floorTexY + floorTexX] >> 1) & 8355711;
 			//ceiling (symmetrical!)
-			info->screen[info->config.height - y][x] = info->texture[3][info->config.texwidth * floorTexY + floorTexX];
+			//천장색 변경
+			info->screen[info->config.height - y][x] = info->map.ce_color;
+			//info->texture[3][info->config.texwidth * floorTexY + floorTexX];
 		}
 	}
 }

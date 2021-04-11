@@ -54,10 +54,10 @@ int main(int argc, char *argv[])
 
 	config_init(&info.config);
 	config_map(&info.map, argv[1]);
-//	config_to_game(&info, &info.map.player);
+	config_to_game(&info, &info.map.player);
 	game_init(&info);
 	load_texture(&info);
-	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분
+//	instead_mapparsing(&info); //추후 지도를 읽어오면서 지워야 할 부분
 	//기본 유지되는 hook (계산하고 그리기)
 	mlx_loop_hook(info.mlx, &main_loop, &info);
 	//이벤트를 받는 hook
