@@ -123,18 +123,47 @@ int	read_color(t_map *map, char *line)
 	return (color);
 }
 
+void read_size(t_map *map, char *line)
+{
+	int i;
+
+	i = 0;
+	map->width = 0;
+	map->height = 0;
+	while (line[i] <= '0' || line[i] >= '9')
+		i++;
+	while (line[i] >= '0' && line[i] <= '9')
+		map->width = map->width * 10 + (line[i++] - '0');
+	while (line[i] <= '0' || line[i] >= '9')
+		i++;
+	while (line[i] >= '0' && line[i] <= '9')
+		map->height = map->height * 10 + (line[i++] - '0');
+}
+
+void parse_texture_path(char **path, char *line)
+{
+	int i;
+
+	i = 0;
+	while (line[i] != ' ')
+		i++;
+	while (line[i] == ' ')
+		i++;
+	*path = line + i;
+}
+
 void line_check(t_map *map,char *line, char **maptext)
 {
 	if (*line == 'R')
-		printf("R\n");
+		read_size(map, line);
 	else if (*line == 'N')
-		printf("N\n");
+		parse_texture_path(&map->no, line);
 	else if (*line == 'S')
-		printf("S\n");
+		parse_texture_path(&map->so, line);
 	else if (*line == 'W')
-		printf("W\n");
+		parse_texture_path(&map->we, line);
 	else if (*line == 'E')
-		printf("E\n");
+		parse_texture_path(&map->ea, line);
 	else if (*line == 'F')
 		map->fl_color = read_color(map, line);
 	else if (*line == 'C')

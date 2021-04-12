@@ -14,10 +14,7 @@
 
 void config_init(t_config *config)
 {
-	config->height = 480;
-	config->width = 640;
-
-//	config->texnum = 4;
+	config->texnum = 4;
 	config->texwidth = 64;
 	config->texheight = 64;
 //	config->texsize = (config->texwidth) * (config->texheight);

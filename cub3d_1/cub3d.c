@@ -133,24 +133,24 @@ void	calc(t_info *info)
 			floorY += floorStepY;
 
 			// choose texture and draw the pixel
-			int floorTexture = 3;
-			int ceilingTexture = 3; //원래 6이었다
+		//	int floorTexture = 3; //제거해야할 부분들
+		//	int ceilingTexture = 3; //원래 6이었다
 
 			int color;
 
 			// floor
-			color = info->texture[floorTexture][info->config.texwidth * ty + tx];
-			color = (color >> 1) & 8355711; // make a bit darker
+	//		color = info->texture[floorTexture][info->config.texwidth * ty + tx];
+	//		color = (color >> 1) & 8355711; // make a bit darker
 			
 	//		color = 0xFF0000;
 			
-			info->screen[y][x] = color;
+			info->screen[y][x] = info->map.fl_color;
 
 			//ceiling (symmetrical, at screenHeight - y - 1 instead of y)
-			color = info->texture[ceilingTexture][info->config.texwidth * ty + tx];
-			color = (color >> 1) & 8355711; // make a bit darker
+		//	color = info->texture[ceilingTexture][info->config.texwidth * ty + tx];
+		//	color = (color >> 1) & 8355711; // make a bit darker
 
-			info->screen[info->config.height - y - 1][x] = color;
+			info->screen[info->config.height - y - 1][x] = info->map.ce_color;
 		}
 	}
 
@@ -292,15 +292,23 @@ void	calc(t_info *info)
 			int texY = (int)texPos & (info->config.texheight - 1); //갑자기 비트연산 &?
 			texPos += step;
 
-			int color = info->texture[texNum][info->config.texheight * texY + texX];
+			int color;
+			// = info->texture[texNum][info->config.texheight * texY + texX];
+			if (side == 1 && rayDirY > 0)
+				color = info->texture[0][info->config.texheight * texY + texX];
+			else if (side == 1 && rayDirY < 0)
+				color = info->texture[1][info->config.texheight * texY + texX];
+			else if (side == 0 && rayDirX > 0)
+				color = info->texture[2][info->config.texheight * texY + texX];
+			else if (side == 0 && rayDirX < 0)
+				color = info->texture[3][info->config.texheight * texY + texX];
+			//	color = (color >> 1) & 8355711;
 
-			if (side == 1)
-				color = (color >> 1) & 8355711;
-
-			info->screen[y][x] = color;
+		info->screen[y][x] = color;
 		}
 
-
+	/*
+	텍스처를 채워주는 듯
 		//FLOOR CASTING (vertical version, directly after drawing the vertical wall stripe for the current x)
 		double floorXWall, floorYWall; //x, y position of the floor texel at the bottom of the wall
 
@@ -355,12 +363,15 @@ void	calc(t_info *info)
 			//floor
 			//이 부분의 입력을 통해 색깔을 변경할 수 있다.
 			info->screen[y][x] = info->map.fl_color;
-			//(info->texture[floorTexture][info->config.texwidth * floorTexY + floorTexX] >> 1) & 8355711;
+			// (info->texture[floorTexture][info->config.texwidth * floorTexY + floorTexX] >> 1) & 8355711;
 			//ceiling (symmetrical!)
 			//천장색 변경
+		//	info->screen[info->config.height - y][x] = info->texture[3][info->config.texwidth * floorTexY + floorTexX];
 			info->screen[info->config.height - y][x] = info->map.ce_color;
 			//info->texture[3][info->config.texwidth * floorTexY + floorTexX];
+		
 		}
+		*/
 	}
 }
 

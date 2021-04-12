@@ -32,6 +32,9 @@ typedef struct s_map
 {
 	int **worldmap;
 
+	int width;
+	int height;
+	
 	int	row;
 	int column;
 	char *no;
@@ -48,13 +51,11 @@ typedef struct s_map
 
 typedef struct s_config
 {
-	int ren_width;
-	int ren_height;
-
 	int height; //512
 	int width; //1024
 	int texwidth; //64
 	int texheight; //64
+	int texnum;
 	double	moveSpeed;
 	double	rotSpeed;
 

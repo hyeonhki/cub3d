@@ -30,8 +30,8 @@ void	ready_screen(t_info *info)
 
 void	ready_texture(t_info *info)
 {
-	info->texture = ft_2d_malloc(4, info->config.texheight * info->config.texwidth); //texnum 부분 손보기
-	ft_reset(info->texture, 4, info->config.texheight*info->config.texwidth);
+	info->texture = ft_2d_malloc(info->config.texnum, info->config.texheight * info->config.texwidth); //texnum 부분 손보기
+	ft_reset(info->texture, info->config.texnum, info->config.texheight*info->config.texwidth);
 }
 
 void	ready_image(t_info *info)

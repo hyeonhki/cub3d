@@ -57,4 +57,3 @@ void	ft_reset(int **buf, int row, int column)
 		i++;
 	}
 }
-
