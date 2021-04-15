@@ -55,8 +55,8 @@ void	check_sprite(t_info *info, t_map *map)
 		{
 			if (map->worldmap[i][j] == 2)
 			{
-				info->sprite[order].x = j + 0.5;
-				info->sprite[order].y = i + 0.5;
+				info->sprite[order].y = j + 0.5;
+				info->sprite[order].x = i + 0.5;
 				info->sprite[order].texture = 4;
 				map->worldmap[i][j] = 0;
 				order += 1;

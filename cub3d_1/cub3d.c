@@ -15,9 +15,6 @@
 #define mapwidth 24
 #define mapheight 24
 
-int		spriteOrder[3];
-double	spriteDistance[3];
-
 typedef struct		s_pair
 {
 	double	first;
@@ -303,7 +300,7 @@ void	calc(t_info *info)
 				mapY += stepY;
 				side = 1;
 			}
-			if (info->map.worldmap[mapX][mapY] == 1) //이래야 2가 스프라이트로 출력되지 않을까?
+			if (info->map.worldmap[mapX][mapY] > 0) //이래야 2가 스프라이트로 출력되지 않을까?
 				hit = 1;
 			//DDA완료를 통해 광선의 시작점에서 벽까지의 이동거리 계산완료
 		}
@@ -438,9 +435,10 @@ void	calc(t_info *info)
 	}
 	//SPRITE CASTING
 	//sort sprites from far to close
+	int		spriteOrder[info->spritenum];
+	double	spriteDistance[info->spritenum];
 	for(int i = 0; i < info->spritenum; i++)
 	{
-		printf("check 1\n");
 		spriteOrder[i] = i;
 		spriteDistance[i] = ((info->posX - info->sprite[i].x) * (info->posX - info->sprite[i].x) + (info->posY - info->sprite[i].y) * (info->posY - info->sprite[i].y)); //sqrt not taken, unneeded
 	}
@@ -449,7 +447,6 @@ void	calc(t_info *info)
 	//after sorting the sprites, do the projection and draw them
 	for(int i = 0; i < info->spritenum; i++)
 	{
-			printf("check 2\n");
 			//translate sprite position to relative to camera
 			double spriteX = info->sprite[spriteOrder[i]].x - info->posX;
 			double spriteY = info->sprite[spriteOrder[i]].y - info->posY;
@@ -487,11 +484,10 @@ void	calc(t_info *info)
 			int drawEndX = spriteWidth / 2 + spriteScreenX;
 			if(drawEndX >= info->config.width) drawEndX = info->config.width - 1;
 
-			printf("%d, %d\n",drawStartX, drawEndX);
+		//	printf("%d, %d\n",drawStartX, drawEndX);
 			//loop through every vertical stripe of the sprite on screen
 			for(int stripe = drawStartX; stripe < drawEndX; stripe++)
 			{
-				printf("check 3\n");
 				int texX = (int)((256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * info->config.texwidth / spriteWidth) / 256);
 				//the conditions in the if are:
 				//1) it's in front of camera plane so you don't see things behind you
@@ -501,7 +497,6 @@ void	calc(t_info *info)
 				if(transformY > 0 && stripe > 0 && stripe < info->config.width && transformY < info->zBuffer[stripe])
 				for(int y = drawStartY; y < drawEndY; y++) //for every pixel of the current stripe
 				{
-					printf("check 4\n");
 					int d = (y-vMoveScreen) * 256 - info->config.height * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
 					int texY = ((d * info->config.texheight) / spriteHeight) / 256;
 					int color = info->texture[info->sprite[spriteOrder[i]].texture][info->config.texwidth * texY + texX]; //get current color from the texture

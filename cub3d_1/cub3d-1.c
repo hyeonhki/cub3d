@@ -15,9 +15,9 @@
 #define mapwidth 24
 #define mapheight 24
 
-#define numSprites 10
-int		spriteOrder[numSprites];
-double	spriteDistance[numSprites];
+#define numSprites 3
+int		spriteOrder[3];
+double	spriteDistance[3];
 
 typedef struct		s_pair
 {
@@ -89,13 +89,8 @@ struct Sprite	sprite[numSprites] =
 
 	//some barrels around the map
 	{1.5, 10.5, 4},
-	{1.5, 11.5, 4},
-	{16.0, 1.8, 4},
-	{16.2, 1.2, 4},
-	{3.5,  2.5, 4},
-	{9.5, 15.5, 4},
-	{10.0, 15.1,4},
-	{10.5, 15.8,4},
+	{2.5, 11.5, 4},
+	{3.5, 12.5, 4},
 };
 /*
 int worldMap[mapwidth][mapheight]=
@@ -463,6 +458,7 @@ void	calc(t_info *info)
 	{
 		spriteOrder[i] = i;
 		spriteDistance[i] = ((info->posX - sprite[i].x) * (info->posX - sprite[i].x) + (info->posY - sprite[i].y) * (info->posY - sprite[i].y)); //sqrt not taken, unneeded
+		printf("sP : %d %f %f %f %f %f\n",i, sprite[i].x, sprite[i].y, info->posX, info->posY,spriteDistance[i]);
 	}
 	sortSprites(spriteOrder, spriteDistance, numSprites);
 	//after sorting the sprites, do the projection and draw them
