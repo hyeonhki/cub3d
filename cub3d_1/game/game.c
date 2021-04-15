@@ -43,7 +43,6 @@ void	check_sprite(t_info *info, t_map *map)
 	int order;
 
 	cnt = count_sprite(map);
-	printf("cnt : %d\n",cnt);
 	info->spritenum = cnt;
 	info->sprite = malloc(sizeof(t_sprite) * cnt);
 	i = 0;
