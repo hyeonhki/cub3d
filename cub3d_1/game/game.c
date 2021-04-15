@@ -12,6 +12,62 @@
 
 #include "game.h"
 
+
+int		count_sprite(t_map *map)
+{
+	int i;
+	int j;
+	int cnt;
+
+	cnt = 0;
+	i = 0;
+	while (i < map->row)
+	{
+		j = 0;
+		while (j < map->column)
+		{
+			if (map->worldmap[i][j] == 2)
+				cnt++;
+			j++;
+		}
+		i++;
+	}
+	return (cnt);
+}
+
+void	check_sprite(t_info *info, t_map *map)
+{
+	int cnt;
+	int i;
+	int j;
+	int order;
+
+	cnt = count_sprite(map);
+	printf("cnt : %d\n",cnt);
+	info->spritenum = cnt;
+	info->sprite = malloc(sizeof(t_sprite) * cnt);
+	i = 0;
+	order = 0;
+	while (i < map->row)
+	{
+		j = 0;
+		while (j < map->column)
+		{
+			if (map->worldmap[i][j] == 2)
+			{
+				info->sprite[order].x = j + 0.5;
+				info->sprite[order].y = i + 0.5;
+				info->sprite[order].texture = 4;
+				map->worldmap[i][j] = 0;
+				order += 1;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+
 void	game_init(t_info *info)
 {
 	info->mlx = mlx_init();
@@ -19,6 +75,7 @@ void	game_init(t_info *info)
 	//draw에서 스크린 버퍼에 구현된 픽셀? 그림은 window에 표현될 imgdata로 옮겨진다
 	ready_texture(info);
 	ready_image(info);
+	check_sprite(info, &info->map);
 	info->win = mlx_new_window(info->mlx, info->config.width, info->config.height, "mlx");
 }
 

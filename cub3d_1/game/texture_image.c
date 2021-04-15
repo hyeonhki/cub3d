@@ -41,6 +41,7 @@ void	load_texture(t_info *info)
 	load_image(info, info->texture[1], info->map.so, &img);
 	load_image(info, info->texture[2], info->map.we, &img);
 	load_image(info, info->texture[3], info->map.ea, &img);
+	load_image(info, info->texture[4], info->map.sp, &img);
 //	load_image(info, info->texture[4], "textures/bluestone.xpm", &img);
 //	load_image(info, info->texture[5], "textures/mossy.xpm", &img);
 //	load_image(info, info->texture[6], "textures/wood.xpm", &img);

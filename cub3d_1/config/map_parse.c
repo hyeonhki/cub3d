@@ -159,7 +159,12 @@ void line_check(t_map *map,char *line, char **maptext)
 	else if (*line == 'N')
 		parse_texture_path(&map->no, line);
 	else if (*line == 'S')
-		parse_texture_path(&map->so, line);
+	{
+		if (*(line + 1) == 'O')
+			parse_texture_path(&map->so, line);
+		else
+			parse_texture_path(&map->sp, line);
+	}
 	else if (*line == 'W')
 		parse_texture_path(&map->we, line);
 	else if (*line == 'E')

@@ -16,18 +16,13 @@
 #include "../../mlx/mlx.h"
 #include "../utils/utils.h"
 #include "../config/config.h"
-/*
-typedef struct s_config
-{
-	int height; //512
-	int width; //1024
-	int texwidth; //64
-	int texheight; //64
-	double	moveSpeed;
-	double	rotSpeed;
 
-}	t_config;
-*/
+typedef struct s_sprite
+{
+	double x;
+	double y;
+	int texture;
+}	t_sprite;
 
 typedef struct s_img
 {
@@ -59,10 +54,15 @@ typedef struct s_info
 	
 	t_img	img;
 	t_config config;
+
+	int		spritenum;
 	t_map	map;
+	t_sprite	*sprite;
 	
 	int		**screen;
 	int		**texture;
+
+	double zBuffer[1024];
 
 }	t_info;
 

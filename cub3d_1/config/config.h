@@ -34,13 +34,14 @@ typedef struct s_map
 
 	int width;
 	int height;
-	
+
 	int	row;
 	int column;
 	char *no;
 	char *so;
 	char *we;
 	char *ea;
+	char *sp;
 
 	int fl_color;
 	int ce_color;
