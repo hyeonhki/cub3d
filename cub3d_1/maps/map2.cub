@@ -7,10 +7,8 @@ EA textures/greystone.xpm
 
 S textures/barrel.xpm
 
-F 2, 255,171
+F 2, 255, 171
 C 253,180,171
-
-int texNum = info->map.worldmap[mapX][mapY] - 1;
 
        111111111111111111111111
       1E0020000000000010000001
@@ -36,3 +34,5 @@ int texNum = info->map.worldmap[mapX][mapY] - 1;
 101010000110110010010001
 100000000110110000010001
 111111111111111111111111
+
+

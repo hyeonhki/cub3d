@@ -18,7 +18,7 @@
 #include "utils/utils.h"
 #include "game/game.h"
 
-#include "../mlx/mlx.h"
+#include "./mlx/mlx.h"
 
 #include <math.h>
 #include <string.h>

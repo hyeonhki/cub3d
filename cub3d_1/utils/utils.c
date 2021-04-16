@@ -14,7 +14,7 @@
 
 void	ft_arraycpy(int *dest, int *src, unsigned int n)
 {
-	int i;
+	unsigned int i;
 	
 	i = 0;
 	while (i < n)

@@ -44,8 +44,10 @@ int main(int argc, char *argv[])
 {
 	t_info info;
 
+	argc = 0;
 	config_init(&info.config);
-	config_map(&info.map, argv[1]);
+	if (!config_map(&info.map, argv[1]))
+		return (0);
 	config_to_game(&info, &info.map);
 	game_init(&info);
 	load_texture(&info);

@@ -21,7 +21,7 @@ typedef struct		s_pair
 	int		second;
 }					t_pair;
 
-static int	compare(const void *first, const void *second)
+/*static int	compare(const void *first, const void *second)
 {
 	if (*(int *)first > *(int *)second)
 		return (1);
@@ -29,7 +29,7 @@ static int	compare(const void *first, const void *second)
 		return (-1);
 	else
 		return (0);
-}
+}*/
 
 void	sort_order(t_pair *orders, int amount)
 {
@@ -125,48 +125,48 @@ void	calc(t_info *info)
 	for(int y = 0; y < info->config.height; y++)
 	{
 		// rayDir for leftmost ray (x = 0) and rightmost ray (x = w)
-		float rayDirX0 = info->dirX - info->planeX;
-		float rayDirY0 = info->dirY - info->planeY;
-		float rayDirX1 = info->dirX + info->planeX;
-		float rayDirY1 = info->dirY + info->planeY;
+	//	float rayDirX0 = info->dirX - info->planeX;
+	//	float rayDirY0 = info->dirY - info->planeY;
+	//	float rayDirX1 = info->dirX + info->planeX;
+	//	float rayDirY1 = info->dirY + info->planeY;
 
 		// Current y position compared to the center of the screen (the horizon)
-		int p = y - info->config.height / 2;
+	//	int p = y - info->config.height / 2;
 
 		// Vertical position of the camera.
-		float posZ = 0.5 * info->config.height;
+	//	float posZ = 0.5 * info->config.height;
 
 		// Horizontal distance from the camera to the floor for the current row.
 		// 0.5 is the z position exactly in the middle between floor and ceiling.
-		float rowDistance = posZ / p;
+	//	float rowDistance = posZ / p;
 
 		// calculate the real world step vector we have to add for each x (parallel to camera plane)
 		// adding step by step avoids multiplications with a weight in the inner loop
-		float floorStepX = rowDistance * (rayDirX1 - rayDirX0) / info->config.width;
-		float floorStepY = rowDistance * (rayDirY1 - rayDirY0) / info->config.width;
+	//	float floorStepX = rowDistance * (rayDirX1 - rayDirX0) / info->config.width;
+	//	float floorStepY = rowDistance * (rayDirY1 - rayDirY0) / info->config.width;
 
 		// real world coordinates of the leftmost column. This will be updated as we step to the right.
-		float floorX = info->posX + rowDistance * rayDirX0;
-		float floorY = info->posY + rowDistance * rayDirY0;
+	//	float floorX = info->posX + rowDistance * rayDirX0;
+	//	float floorY = info->posY + rowDistance * rayDirY0;
 
 		for(int x = 0; x < info->config.width; ++x)
 		{
 			// the cell coord is simply got from the integer parts of floorX and floorY
-			int cellX = (int)(floorX);
-			int cellY = (int)(floorY);
+		//	int cellX = (int)(floorX);
+		//	int cellY = (int)(floorY);
 
 			// get the texture coordinate from the fractional part
-			int tx = (int)(info->config.texwidth * (floorX - cellX)) & (info->config.texwidth - 1);
-			int ty = (int)(info->config.texheight * (floorY - cellY)) & (info->config.texheight - 1);
+		//	int tx = (int)(info->config.texwidth * (floorX - cellX)) & (info->config.texwidth - 1);
+		//	int ty = (int)(info->config.texheight * (floorY - cellY)) & (info->config.texheight - 1);
 
-			floorX += floorStepX;
-			floorY += floorStepY;
+		//	floorX += floorStepX;
+		//	floorY += floorStepY;
 
 			// choose texture and draw the pixel
 		//	int floorTexture = 3; //제거해야할 부분들
 		//	int ceilingTexture = 3; //원래 6이었다
 
-			int color;
+		//	int color;
 
 			// floor
 		//	color = info->texture[floorTexture][info->config.texwidth * ty + tx];
@@ -330,7 +330,7 @@ void	calc(t_info *info)
 				color = info->texture[1][info->config.texheight * texY + texX];
 			else if (side == 0 && rayDirX > 0)
 				color = info->texture[2][info->config.texheight * texY + texX];
-			else if (side == 0 && rayDirX < 0)
+			if (side == 0 && rayDirX < 0)
 				color = info->texture[3][info->config.texheight * texY + texX];
 			//	color = (color >> 1) & 8355711;
 

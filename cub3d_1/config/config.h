@@ -34,6 +34,9 @@ typedef struct s_map
 
 	int width;
 	int height;
+	int r_check;
+	int fl_check;
+	int ce_check;
 
 	int	row;
 	int column;
@@ -63,6 +66,6 @@ typedef struct s_config
 }	t_config;
 
 void config_init(t_config *config);
-void config_map(t_map *map, char *path);
+int config_map(t_map *map, char *path);
 
 #endif

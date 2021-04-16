@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "config.h"
+#include "stdio.h"
 
 void maxlen_map(char *maptext, t_map *map)
 {
@@ -82,10 +83,28 @@ void map_init(t_map *map, char *maptext, int height)
 	}
 }
 
+void	ft_re2set(t_map *map, int row, int column)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (i < row)
+	{
+		while (j < column)
+		{
+			map->worldmap[i][j] = 0;
+			j++;
+		}
+		i++;
+	}
+}
+
 void set_map(t_map *map)
 {
 	map->worldmap = ft_2d_malloc(map->row, map->column);
-	ft_reset(map->worldmap, map->row, map->column);
+	ft_re2set(map, map->row, map->column);
 }
 
 void parse_map(t_map *map, char *maptext)
@@ -95,89 +114,148 @@ void parse_map(t_map *map, char *maptext)
 	map_init(map, maptext, map->row); // 한줄씩 복사해서 붙여넣기
 }
 
-int	read_color(t_map *map, char *line)
+int	read_color(char *line, int *color, int *cnt)
 {
-	int color;
 	int rgb;
 	int i;
 
+	if ((*cnt)++ != 0)
+		return (0);
 	rgb = 0;
-	i = 0;
-	while (line[i] <= '0' || line[i] >= '9')
+	i = 2;
+	while (line[i] == ' ')
 		i++;
 	while (line[i] >= '0' && line[i] <= '9')
 		rgb = rgb * 10 + (line[i++] - '0');
-	color = rgb * 256 * 256;
-	while (line[i] <= '0' || line[i] >= '9')
+	*color = rgb * 256 * 256;
+	if (line[i] == ',')
+		i += 1;
+	else
+		return (0);
+	while (line[i] == ' ')
 		i++;
 	rgb = 0;
 	while (line[i] >= '0' && line[i] <= '9')
 		rgb = rgb * 10 + (line[i++] - '0');
-	color += rgb * 256;
-	while (line[i] <= '0' || line[i] >= '9')
-		line++;
+	*color += rgb * 256;
+	if (line[i] == ',')
+		i += 1;
+	else
+		return (0);
+	while (line[i] == ' ')
+		i++;
 	rgb = 0;
 	while (line[i] >= '0' && line[i] <= '9')
 		rgb = rgb * 10 + (line[i++] - '0');
-	color += rgb;
-	return (color);
+	*color += rgb;
+	if (line[i] != '\0')
+		return (0);
+	return (1);
 }
 
-void read_size(t_map *map, char *line)
+int read_size(t_map *map, char *line)
 {
 	int i;
 
+	if (map->r_check++ != 0)
+		return (0);
 	i = 0;
+	if (line[i] == 'R' && line[i+1] == ' ')
+		i += 2;
+	else
+		return (0);
 	map->width = 0;
 	map->height = 0;
-	while (line[i] <= '0' || line[i] >= '9')
+	while (line[i] == ' ')
 		i++;
 	while (line[i] >= '0' && line[i] <= '9')
 		map->width = map->width * 10 + (line[i++] - '0');
-	while (line[i] <= '0' || line[i] >= '9')
+	while (line[i] == ' ')
 		i++;
 	while (line[i] >= '0' && line[i] <= '9')
 		map->height = map->height * 10 + (line[i++] - '0');
+	if (line[i] != '\0')
+		return (0);
+	return (1);
 }
 
-void parse_texture_path(char **path, char *line)
+int parse_texture_path(char **path, char *line)
 {
 	int i;
 
 	i = 0;
-	while (line[i] != ' ')
-		i++;
+	if (*path != 0)
+		return (0);
+	if (line[i] == 'N' && line[i+1] == 'O')
+		i += 2;
+	else if (line[i] == 'S' && line[i+1] == 'O')
+		i += 2;
+	else if (line[i] == 'W' && line[i+1] == 'E')
+		i += 2;
+	else if (line[i] == 'E' && line[i+1] == 'A')
+		i += 2;
+	else if (line[i] == 'S' && line[i+1] == ' ')
+		i += 2;
+	else
+		return (0);
 	while (line[i] == ' ')
 		i++;
 	*path = line + i;
+	return (1);
 }
 
-void line_check(t_map *map,char *line, char **maptext)
+int map_order_check(t_map *map)
+{
+	if (map->r_check == 0)
+		return (0);
+	else if (map->no == 0)
+		return (0);
+	else if (map->so == 0)
+		return (0);
+	else if (map->we == 0)
+		return (0);
+	else if (map->ea == 0)
+		return (0);
+	else if (map->sp == 0)
+		return (0);
+	else if (map->ce_check == 0)
+		return (0);
+	else if (map->fl_check == 0)
+		return (0);
+	return (1);
+}
+
+int line_check(t_map *map,char *line, char **maptext)
 {
 	if (*line == 'R')
-		read_size(map, line);
+		return (read_size(map, line));
 	else if (*line == 'N')
-		parse_texture_path(&map->no, line);
+		return (parse_texture_path(&map->no, line));
 	else if (*line == 'S')
-	{
 		if (*(line + 1) == 'O')
-			parse_texture_path(&map->so, line);
+			return (parse_texture_path(&map->so, line));
 		else
-			parse_texture_path(&map->sp, line);
-	}
+			return (parse_texture_path(&map->sp, line));
 	else if (*line == 'W')
-		parse_texture_path(&map->we, line);
+		return (parse_texture_path(&map->we, line));
 	else if (*line == 'E')
-		parse_texture_path(&map->ea, line);
+		return (parse_texture_path(&map->ea, line));
 	else if (*line == 'F')
-		map->fl_color = read_color(map, line);
+		return (read_color(line, &map->fl_color, &map->fl_check));
 	else if (*line == 'C')
-		map->ce_color = read_color(map, line);
+		return (read_color(line, &map->ce_color, &map->ce_check));
 	else if (*line == ' ' || (*line >= '0' && *line <= '9'))
 	{
+		if (!(map_order_check(map)))
+			return (0);
 		*maptext = ft_strjoin(*maptext, line);
 		*maptext = ft_strjoin(*maptext, "\n");
 	}
+	else if (*line == '\0')
+		return (1);
+	else
+		return (0);
+	return (1);
 }
 
 int	is_player(int p)
@@ -204,7 +282,6 @@ void player_init(t_map *map)
 				map->player.y = j;
 				map->player.dir = map->worldmap[i][j] + '0';
 				map->worldmap[i][j] = 0;
-				return ;
 			}
 			j++;
 		}
@@ -212,20 +289,115 @@ void player_init(t_map *map)
 	}
 }
 
-void config_map(t_map *map, char *path)
+int error(void)
+{
+	printf("Error\n");
+	return (0);
+}
+
+void reset_params(t_map *map)
+{
+	map->r_check = 0;
+	map->no = 0;
+	map->so = 0;
+	map->we = 0;
+	map->ea = 0;
+	map->sp = 0;
+	map->ce_check = 0;
+	map->fl_check = 0;
+}
+int check_NSWE(int c, int *cnt)
+{
+	if (*cnt != 0)
+		return (0);
+	if (c == 'N' - '0')
+	{
+		*cnt += 1;
+		return (1);
+	}
+	if (c == 'W' - '0')
+	{
+		*cnt += 1;
+		return (1);
+	}
+	if (c == 'S' - '0')
+	{
+		*cnt += 1;
+		return (1);
+	}
+	if (c == 'E' - '0')
+	{
+		*cnt += 1;
+		return (1);
+	}
+	return (0);
+}
+
+int check_012(int c)
+{
+	if (c >= 0 && c <= 2)
+		return (1);
+	else
+		return (0);
+}
+
+int map_element_check(t_map *map)
+{
+	int i;
+	int j;
+	int c;
+	int cnt;
+
+	c = 0;
+	cnt = 0;
+	i = 0;
+	printf("%d %d", map->row, map->column);
+	while (i < map->row)
+	{
+		j = 0;
+		while (j < map->column)
+		{
+			c = map->worldmap[i][j];
+			printf("%d %d %d\n", i , j, c);
+			printf("1 30 : %d",map->worldmap[1][30]);
+			printf("2 30 : %d",map->worldmap[2][30]);
+			if (!(check_NSWE(c, &cnt) || check_012(c)))
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
+
+int map_check(t_map *map)
+{
+	if (map_element_check(map) == 0)
+		return (0);
+	return (1);
+}
+
+int config_map(t_map *map, char *path)
 {
 	int fd;
 	int ret;
 	char *line;
 	char *maptext;
 
+	reset_params(map);
 	maptext = 0;
 	fd = open(path, O_RDONLY);
 	while ((ret = get_next_line(fd, &line) > 0))
-		line_check(map, line, &maptext);
+	{
+		if (!line_check(map, line, &maptext))
+			return (error());
+			
+	}
 	//두번 해야지 마지막줄까지나온다. ret=0 으로 EOF 되어서 반복문이 종료될 경우, line에 마지막 줄이 남아있기 때문에!
 	line_check(map, line, &maptext); //막줄 저장용
-	printf("%s\n",maptext);
 	parse_map(map, maptext);
+	if (!map_check(map))
+		return (error());
 	player_init(map);
+	return (1);
 }

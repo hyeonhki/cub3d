@@ -17,10 +17,6 @@ void config_init(t_config *config)
 	config->texnum = 5;
 	config->texwidth = 64;
 	config->texheight = 64;
-//	config->texsize = (config->texwidth) * (config->texheight);
-
-	config->moveSpeed = 0.15;
-	config->rotSpeed = 0.15;
-
-	
+	config->moveSpeed = 0.3;
+	config->rotSpeed = 0.3;
 }

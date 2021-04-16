@@ -13,7 +13,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "../../mlx/mlx.h"
+#include "../mlx/mlx.h"
 #include "../utils/utils.h"
 #include "../config/config.h"
 
