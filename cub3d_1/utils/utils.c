@@ -46,9 +46,9 @@ void	ft_reset(int **buf, int row, int column)
 	int		j;
 
 	i = 0;
-	j = 0;
 	while (i < row)
 	{
+		j = 0;
 		while (j < column)
 		{
 			buf[i][j] = 0;

@@ -63,6 +63,7 @@ void map_init(t_map *map, char *maptext, int height)
 
 	i = 0;
 	j = 0;
+	
 	substitution_space(&maptext);
 	while (i < height)
 	{
@@ -70,13 +71,11 @@ void map_init(t_map *map, char *maptext, int height)
 		while (maptext[j] != '\n')
 		{
 			map->worldmap[i][k] = maptext[j] - '0';
-			printf("%d", map->worldmap[i][k]); //추후 삭제
 			k++;
 			j++;
 		}
 		if (maptext[j] == '\n')
 		{
-			printf("\n"); //추후삭제
 			j++;
 		}
 		i++;
@@ -89,9 +88,9 @@ void	ft_re2set(t_map *map, int row, int column)
 	int		j;
 
 	i = 0;
-	j = 0;
 	while (i < row)
 	{
+		j = 0;
 		while (j < column)
 		{
 			map->worldmap[i][j] = 0;
@@ -107,11 +106,64 @@ void set_map(t_map *map)
 	ft_re2set(map, map->row, map->column);
 }
 
-void parse_map(t_map *map, char *maptext)
+void move_down(char **maptext, int *index)
+{
+	int len;
+	int tail;
+
+	tail = 0;
+	while (*maptext[*index + tail] != '\n')
+		tail++;
+	len = *index + tail + 1;
+	(*index) += len;
+}
+
+void move_up(char **maptext, int *index)
+{
+	int len;
+	int head;
+
+	head = 0;
+	while (*maptext[*index - head] != '\n')
+		head++;
+	*index -= 1;
+	while (*maptext[*index - head] != '\n')
+		(*index)--;
+	(*index) += head;
+}
+
+void move_right(char **maptext, int *index)
+{
+	while (*maptext[(*index)] == 1)
+		(*index)++;
+}
+
+void move_left(char **maptext, int *index)
+{
+	while (*maptext[(*index)] == 1)
+		(*index)--;
+}
+
+int valid_wall_check(t_map *map, char *maptext)
+{
+	int i;
+	
+	i = 0;
+	while (maptext[i] != 1)
+		i++;
+	while (maptext[i] == 1)
+		i++;
+	return (1);
+}
+
+int parse_map(t_map *map, char *maptext)
 {
 	maxlen_map(maptext, map);
-	set_map(map); //2차원 배열 할당 및 초기화/	
+	set_map(map); //2차원 배열 할당 및 초기화/
+//	if (!valid_wall_check(map, maptext))
+//		return (0);
 	map_init(map, maptext, map->row); // 한줄씩 복사해서 붙여넣기
+	return (1);
 }
 
 int	read_color(char *line, int *color, int *cnt)
@@ -351,22 +403,20 @@ int map_element_check(t_map *map)
 	c = 0;
 	cnt = 0;
 	i = 0;
-	printf("%d %d", map->row, map->column);
 	while (i < map->row)
 	{
 		j = 0;
 		while (j < map->column)
 		{
 			c = map->worldmap[i][j];
-			printf("%d %d %d\n", i , j, c);
-			printf("1 30 : %d",map->worldmap[1][30]);
-			printf("2 30 : %d",map->worldmap[2][30]);
 			if (!(check_NSWE(c, &cnt) || check_012(c)))
 				return (0);
 			j++;
 		}
 		i++;
 	}
+	if (cnt == 0)
+		return (0);
 	return (1);
 }
 
@@ -395,7 +445,8 @@ int config_map(t_map *map, char *path)
 	}
 	//두번 해야지 마지막줄까지나온다. ret=0 으로 EOF 되어서 반복문이 종료될 경우, line에 마지막 줄이 남아있기 때문에!
 	line_check(map, line, &maptext); //막줄 저장용
-	parse_map(map, maptext);
+	if (!parse_map(map, maptext))
+		return (error());
 	if (!map_check(map))
 		return (error());
 	player_init(map);
