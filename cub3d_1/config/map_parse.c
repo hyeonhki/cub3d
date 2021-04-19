@@ -39,21 +39,6 @@ void maxlen_map(char *maptext, t_map *map)
 	map->row = cnt;
 }
 
-void substitution_space(char **maptext)
-{
-	char *ret;
-	int i;
-
-	i = 0;
-	ret = *maptext;
-	while (ret[i] != '\0')
-	{
-		if (ret[i] == ' ')
-			ret[i] = '0';
-		i++;
-	}
-}
-
 void map_init(t_map *map, char *maptext, int height)
 {
 	int i;
@@ -62,7 +47,6 @@ void map_init(t_map *map, char *maptext, int height)
 
 	i = 0;
 	j = 0;
-//	substitution_space(&maptext); //추후 삭제해야함
 	while (i < height)
 	{
 		k = 0;
@@ -281,7 +265,7 @@ void player_init(t_map *map)
 				map->player.x = i;
 				map->player.y = j;
 				map->player.dir = map->w_map[i][j];
-				map->w_map[i][j] = 0;
+				map->w_map[i][j] = '0';
 			}
 			j++;
 		}
