@@ -77,17 +77,17 @@ int	key_press(int key, t_info *info)
 {
 	if (key == KEY_W)
 	{
-		if (!info->map.worldmap[(int)(info->posX + info->dirX * info->config.moveSpeed)][(int)(info->posY)])
+		if (info->map.w_map[(int)(info->posX + info->dirX * info->config.moveSpeed)][(int)(info->posY)] == '0')
 			info->posX += info->dirX * info->config.moveSpeed;
-		if (!info->map.worldmap[(int)(info->posX)][(int)(info->posY + info->dirY * info->config.moveSpeed)])
+		if (info->map.w_map[(int)(info->posX)][(int)(info->posY + info->dirY * info->config.moveSpeed)] == '0')
 			info->posY += info->dirY * info->config.moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (key == KEY_S)
 	{
-		if (!info->map.worldmap[(int)(info->posX - info->dirX * info->config.moveSpeed)][(int)(info->posY)])
+		if (info->map.w_map[(int)(info->posX - info->dirX * info->config.moveSpeed)][(int)(info->posY)] == '0')
 			info->posX -= info->dirX * info->config.moveSpeed;
-		if (!info->map.worldmap[(int)(info->posX)][(int)(info->posY - info->dirY * info->config.moveSpeed)])
+		if (info->map.w_map[(int)(info->posX)][(int)(info->posY - info->dirY * info->config.moveSpeed)] == '0')
 			info->posY -= info->dirY * info->config.moveSpeed;
 	}
 	//rotate to the right
@@ -271,7 +271,7 @@ void	calc(t_info *info)
 				mapY += stepY;
 				side = 1;
 			}
-			if (info->map.worldmap[mapX][mapY] == 1) //이래야 2가 스프라이트로 출력되지 않을까?
+			if (info->map.w_map[mapX][mapY] == '1') //이래야 2가 스프라이트로 출력되지 않을까?
 				hit = 1;
 			//DDA완료를 통해 광선의 시작점에서 벽까지의 이동거리 계산완료
 		}
@@ -296,7 +296,7 @@ void	calc(t_info *info)
 			drawEnd = info->config.height - 1;
 
 		// 텍스터 계산
-	//	int texNum = info->map.worldmap[mapX][mapY] - 1;
+	//	int texNum = info->map.w_map[mapX][mapY] - 1;
 		//1을 빼주는 이유는 지도에 0부터 8까지로 채워놨는데
 		//0은 없는 거고 1부터 8까지 텍스처라 1빼서 0부터 7까지로
 

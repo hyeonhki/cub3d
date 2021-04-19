@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "config.h"
-#include "stdio.h"
 
 void maxlen_map(char *maptext, t_map *map)
 {
@@ -50,7 +49,7 @@ void substitution_space(char **maptext)
 	while (ret[i] != '\0')
 	{
 		if (ret[i] == ' ')
-			ret[i] = '1';
+			ret[i] = '0';
 		i++;
 	}
 }
@@ -63,14 +62,13 @@ void map_init(t_map *map, char *maptext, int height)
 
 	i = 0;
 	j = 0;
-	
-	substitution_space(&maptext);
+//	substitution_space(&maptext); //추후 삭제해야함
 	while (i < height)
 	{
 		k = 0;
 		while (maptext[j] != '\n')
 		{
-			map->worldmap[i][k] = maptext[j] - '0';
+			map->w_map[i][k] = maptext[j];
 			k++;
 			j++;
 		}
@@ -93,7 +91,7 @@ void	ft_re2set(t_map *map, int row, int column)
 		j = 0;
 		while (j < column)
 		{
-			map->worldmap[i][j] = 0;
+			map->w_map[i][j] = ' ';
 			j++;
 		}
 		i++;
@@ -102,58 +100,8 @@ void	ft_re2set(t_map *map, int row, int column)
 
 void set_map(t_map *map)
 {
-	map->worldmap = ft_2d_malloc(map->row, map->column);
+	map->w_map = ft_2d_malloc(map->row, map->column);
 	ft_re2set(map, map->row, map->column);
-}
-
-void move_down(char **maptext, int *index)
-{
-	int len;
-	int tail;
-
-	tail = 0;
-	while (*maptext[*index + tail] != '\n')
-		tail++;
-	len = *index + tail + 1;
-	(*index) += len;
-}
-
-void move_up(char **maptext, int *index)
-{
-	int len;
-	int head;
-
-	head = 0;
-	while (*maptext[*index - head] != '\n')
-		head++;
-	*index -= 1;
-	while (*maptext[*index - head] != '\n')
-		(*index)--;
-	(*index) += head;
-}
-
-void move_right(char **maptext, int *index)
-{
-	while (*maptext[(*index)] == 1)
-		(*index)++;
-}
-
-void move_left(char **maptext, int *index)
-{
-	while (*maptext[(*index)] == 1)
-		(*index)--;
-}
-
-int valid_wall_check(t_map *map, char *maptext)
-{
-	int i;
-	
-	i = 0;
-	while (maptext[i] != 1)
-		i++;
-	while (maptext[i] == 1)
-		i++;
-	return (1);
 }
 
 int parse_map(t_map *map, char *maptext)
@@ -296,7 +244,7 @@ int line_check(t_map *map,char *line, char **maptext)
 		return (read_color(line, &map->fl_color, &map->fl_check));
 	else if (*line == 'C')
 		return (read_color(line, &map->ce_color, &map->ce_check));
-	else if (*line == ' ' || (*line >= '0' && *line <= '9'))
+	else if (*line >= ' ' && *line <= '9')
 	{
 		if (!(map_order_check(map)))
 			return (0);
@@ -312,7 +260,7 @@ int line_check(t_map *map,char *line, char **maptext)
 
 int	is_player(int p)
 {
-	if (p + '0' == 'N' || p + '0' == 'S' || p + '0' == 'W' || p + '0' == 'E')
+	if (p == 'N' || p == 'S' || p == 'W' || p == 'E')
 		return (1);
 	else
 		return (0);
@@ -328,12 +276,12 @@ void player_init(t_map *map)
 		j = 0;
 		while (j < map->column)
 		{
-			if (is_player(map->worldmap[i][j]))
+			if (is_player(map->w_map[i][j]))
 			{
 				map->player.x = i;
 				map->player.y = j;
-				map->player.dir = map->worldmap[i][j] + '0';
-				map->worldmap[i][j] = 0;
+				map->player.dir = map->w_map[i][j];
+				map->w_map[i][j] = 0;
 			}
 			j++;
 		}
@@ -362,22 +310,22 @@ int check_NSWE(int c, int *cnt)
 {
 	if (*cnt != 0)
 		return (0);
-	if (c == 'N' - '0')
+	if (c == 'N')
 	{
 		*cnt += 1;
 		return (1);
 	}
-	if (c == 'W' - '0')
+	if (c == 'W')
 	{
 		*cnt += 1;
 		return (1);
 	}
-	if (c == 'S' - '0')
+	if (c == 'S')
 	{
 		*cnt += 1;
 		return (1);
 	}
-	if (c == 'E' - '0')
+	if (c == 'E')
 	{
 		*cnt += 1;
 		return (1);
@@ -387,7 +335,9 @@ int check_NSWE(int c, int *cnt)
 
 int check_012(int c)
 {
-	if (c >= 0 && c <= 2)
+	if (c >= '0' && c <= '2')
+		return (1);
+	if (c == ' ')
 		return (1);
 	else
 		return (0);
@@ -408,7 +358,7 @@ int map_element_check(t_map *map)
 		j = 0;
 		while (j < map->column)
 		{
-			c = map->worldmap[i][j];
+			c = map->w_map[i][j];
 			if (!(check_NSWE(c, &cnt) || check_012(c)))
 				return (0);
 			j++;
@@ -448,6 +398,8 @@ int config_map(t_map *map, char *path)
 	if (!parse_map(map, maptext))
 		return (error());
 	if (!map_check(map))
+		return (error());
+	if (!valid_wall_check(map, map->w_map))
 		return (error());
 	player_init(map);
 	return (1);

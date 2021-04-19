@@ -26,7 +26,7 @@ int		count_sprite(t_map *map)
 		j = 0;
 		while (j < map->column)
 		{
-			if (map->worldmap[i][j] == 2)
+			if (map->w_map[i][j] == '2')
 				cnt++;
 			j++;
 		}
@@ -52,12 +52,12 @@ void	check_sprite(t_info *info, t_map *map)
 		j = 0;
 		while (j < map->column)
 		{
-			if (map->worldmap[i][j] == 2)
+			if (map->w_map[i][j] == '2')
 			{
 				info->sprite[order].y = j + 0.5;
 				info->sprite[order].x = i + 0.5;
 				info->sprite[order].texture = 4;
-				map->worldmap[i][j] = 0;
+				map->w_map[i][j] = '0';
 				order += 1;
 			}
 			j++;
