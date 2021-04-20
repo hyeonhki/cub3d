@@ -16,5 +16,6 @@
 void	ft_arraycpy(int *dest, int *src, unsigned int n);
 int		 **ft_2d_malloc(int row, int column);
 void	ft_reset(int **buf, int row, int column);
+int		ft_strcmp(char *s1, char *s2);
 
 #endif

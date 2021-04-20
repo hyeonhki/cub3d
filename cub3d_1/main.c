@@ -40,17 +40,18 @@ void config_to_game(t_info *info, t_map *map)
 	}
 }
 
-int screenshot()
+int screenshot(void)
 {
-	;
+	return (1);
 }
 
 int main(int argc, char *argv[])
 {
-	t_info info;
-	int save_opt;
+	t_info	info;
+	int		save_opt;
 
 	save_opt = (argc > 2 && !ft_strcmp(argv[2], "-save"));
+	printf("save_opt : %d\n", save_opt);
 	if (argc < 2 || argc > 3)
 		return (0);
 	config_init(&info.config);
