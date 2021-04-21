@@ -38,7 +38,8 @@ typedef struct s_img
 
 typedef struct s_info
 {
-	
+	//save opt
+	int		save_opt;
 	//사용자의 위치
 	double	posX;
 	double	posY;

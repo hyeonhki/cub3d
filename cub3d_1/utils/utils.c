@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <stdio.h>
 
 void	ft_arraycpy(int *dest, int *src, unsigned int n)
 {
@@ -67,5 +68,12 @@ int ft_strcmp(char *s1, char *s2)
 		i++;
 	if (s1[i] == s2[i])
 		return (1);
+	return (0);
+}
+
+int error(char *str)
+{
+	printf("Error\n");
+	printf("%s\n",str);
 	return (0);
 }

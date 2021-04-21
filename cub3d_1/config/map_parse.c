@@ -92,8 +92,6 @@ int parse_map(t_map *map, char *maptext)
 {
 	maxlen_map(maptext, map);
 	set_map(map); //2차원 배열 할당 및 초기화/
-//	if (!valid_wall_check(map, maptext))
-//		return (0);
 	map_init(map, maptext, map->row); // 한줄씩 복사해서 붙여넣기
 	return (1);
 }
@@ -273,12 +271,6 @@ void player_init(t_map *map)
 	}
 }
 
-int error(void)
-{
-	printf("Error\n");
-	return (0);
-}
-
 void reset_params(t_map *map)
 {
 	map->r_check = 0;
@@ -374,17 +366,17 @@ int config_map(t_map *map, char *path)
 	while ((ret = get_next_line(fd, &line) > 0))
 	{
 		if (!line_check(map, line, &maptext))
-			return (error());
+			return (error("line check error"));
 			
 	}
 	//두번 해야지 마지막줄까지나온다. ret=0 으로 EOF 되어서 반복문이 종료될 경우, line에 마지막 줄이 남아있기 때문에!
 	line_check(map, line, &maptext); //막줄 저장용
 	if (!parse_map(map, maptext))
-		return (error());
+		return (error("parse map error"));
 	if (!map_check(map))
-		return (error());
+		return (error("map check error"));
 	if (!valid_wall_check(map, map->w_map))
-		return (error());
+		return (error("valid wall check"));
 	player_init(map);
 	return (1);
 }

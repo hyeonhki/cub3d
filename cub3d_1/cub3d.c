@@ -477,7 +477,6 @@ void	calc(t_info *info)
 		}
 }
 
-
 void	draw(t_info *info)
 {
 	for (int y = 0; y < info->config.height; y++)
@@ -487,6 +486,10 @@ void	draw(t_info *info)
 			info->img.data[y * info->config.width + x] = info->screen[y][x];
 		}
 	}
+	if (save_bmp(info) == 1)
+		exit(EXIT_SUCCESS);
+	else
+		error("fialed to save");
 	mlx_put_image_to_window(info->mlx, info->win, info->img.img, 0, 0);
 }
 

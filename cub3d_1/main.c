@@ -39,29 +39,32 @@ void config_to_game(t_info *info, t_map *map)
 		info->planeX = -0.66;
 	}
 }
-
-int screenshot(void)
+/*
+void screenshot(t_info *info)
 {
-	return (1);
+	update_screen(info);
+	update_ui(info);
+	update_window(info);
+	if (!save_bmp(info))
+		error("fialed to save screenshot");
+	return (exit(EXIT_SUCCESS));
 }
-
+*/
 int main(int argc, char *argv[])
 {
 	t_info	info;
 	int		save_opt;
 
-	save_opt = (argc > 2 && !ft_strcmp(argv[2], "-save"));
-	printf("save_opt : %d\n", save_opt);
+	info.save_opt = (argc > 2 && ft_strcmp(argv[2], "-save"));
+	printf("save_opt : %d\n", info.save_opt);
 	if (argc < 2 || argc > 3)
-		return (0);
+		return (error("argc error"));
 	config_init(&info.config);
 	if (!config_map(&info.map, argv[1]))
 		return (0);
 	config_to_game(&info, &info.map);
 	game_init(&info);
 	load_texture(&info);
-	if (save_opt)
-		return (screenshot());
 	//기본 유지되는 hook (계산하고 그리기)
 	mlx_loop_hook(info.mlx, &main_loop, &info);
 	//이벤트를 받는 hook
