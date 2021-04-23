@@ -53,6 +53,8 @@ void map_init(t_map *map, char *maptext, int height)
 		while (maptext[j] != '\n')
 		{
 			map->w_map[i][k] = maptext[j];
+			if (maptext[j] == ' ')
+				map->w_map[i][k] = '0';
 			k++;
 			j++;
 		}
@@ -353,6 +355,27 @@ int map_check(t_map *map)
 	return (1);
 }
 
+void map_reset(t_map *map)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < map->row)
+	{
+		j = 0;
+		while (j < map->column)
+		{
+			if (map->w_map[i][j] == 0)
+				map->w_map[i][j] = '0';
+			if (map->w_map[i][j] == 2)
+				map->w_map[i][j] = '2';
+			j++;
+		}
+		i++;
+	}
+}
+
 int config_map(t_map *map, char *path)
 {
 	int fd;
@@ -373,10 +396,10 @@ int config_map(t_map *map, char *path)
 	line_check(map, line, &maptext); //막줄 저장용
 	if (!parse_map(map, maptext))
 		return (error("parse map error"));
-	if (!map_check(map))
-		return (error("map check error"));
-	if (!valid_wall_check(map, map->w_map))
-		return (error("valid wall check"));
+//	if (!map_check(map))
+//		return (error("map check error"));
 	player_init(map);
+	valid_check(map, map->player.x, map->player.y);
+	map_reset(map);
 	return (1);
 }

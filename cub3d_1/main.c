@@ -18,6 +18,7 @@ void config_to_game(t_info *info, t_map *map)
 	info->config.height = map->height;
 	info->posX = map->player.x + 0.5;
 	info->posY = map->player.y + 0.5;
+	printf("map : %d\n",map->w_map[map->player.x][map->player.y]);
 	if (map->player.dir == 'N')
 	{
 		info->dirX = -1.0;

@@ -486,10 +486,11 @@ void	draw(t_info *info)
 			info->img.data[y * info->config.width + x] = info->screen[y][x];
 		}
 	}
-	if (save_bmp(info) == 1)
-		exit(EXIT_SUCCESS);
-	else
-		error("fialed to save");
+	if (info->save_opt == 1)
+	{
+		if (save_bmp(info) == 1)
+			exit(EXIT_SUCCESS);
+	}
 	mlx_put_image_to_window(info->mlx, info->win, info->img.img, 0, 0);
 }
 

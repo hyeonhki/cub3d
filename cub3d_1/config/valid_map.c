@@ -180,7 +180,7 @@ int map_check_clock(t_map *map, int *i, int *j, int start)
 	int ret;
 
 	dir = 6;
-	move_EW(map, i, j, &dir, 1);
+	move_NS(map, i, j, &dir, -1);
 	while (!(*i == 0 && *j == start))
 	{
 		if (dir == 6)
@@ -199,7 +199,6 @@ int map_check_clock(t_map *map, int *i, int *j, int start)
 			ret = move_NWSE(map, i, j, &dir, 1);
 		else if (dir == 3)
 			ret = move_NWSE(map, i, j, &dir, -1);
-		//플레이어 위치 체크
 		if (ret == 0)
 			return (0);
 	}
@@ -220,5 +219,7 @@ int valid_wall_check(t_map *map, int **w_map)
 	start = j;
 	if (!(map_check_clock(map, &i, &j, start)))
 		return (0);
+///	if (!(player_check(map, &i, &j, start)))
+///		return (0);
 	return (1);
 }

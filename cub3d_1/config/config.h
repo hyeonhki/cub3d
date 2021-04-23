@@ -31,6 +31,7 @@ typedef struct s_player
 typedef struct s_map
 {
 	int **w_map;
+	int **mask;
 
 	int width;
 	int height;
@@ -68,5 +69,6 @@ typedef struct s_config
 void config_init(t_config *config);
 int config_map(t_map *map, char *path);
 int valid_wall_check(t_map *map, int **w_map);
+void	valid_check(t_map *map, int i, int j);
 
 #endif

@@ -5,101 +5,120 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hyeonhki <hyeonhki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/21 14:52:21 by hyeonhki          #+#    #+#             */
-/*   Updated: 2021/04/21 14:52:21 by hyeonhki         ###   ########.fr       */
+/*   Created: 2021/04/22 19:44:12 by hyeonhki          #+#    #+#             */
+/*   Updated: 2021/04/22 19:44:13 by hyeonhki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "cub3d.h"
 
-static void
-	set_int_in_char(unsigned char *start, int value)
-{
-	start[0] = (unsigned char)(value);
-	start[1] = (unsigned char)(value >> 8);
-	start[2] = (unsigned char)(value >> 16);
-	start[3] = (unsigned char)(value >> 24);
-}
+const int BYTES_PER_PIXEL = 3; /// red, green, & blue
+const int FILE_HEADER_SIZE = 14;
+const int INFO_HEADER_SIZE = 40;
 
-static int
-	write_bmp_header(int fd, int filesize, t_info *info)
-{
-	int				i;
-	int				tmp;
-	unsigned char	bmpfileheader[54];
+void generateBitmapImage(unsigned char* image, int height, int width, char* imageFileName);
+unsigned char* createBitmapFileHeader(int height, int stride);
+unsigned char* createBitmapInfoHeader(int height, int width);
 
-	i = 0;
-	while (i < 54)
-		bmpfileheader[i++] = (unsigned char)(0);
-	bmpfileheader[0] = (unsigned char)('B');
-	bmpfileheader[1] = (unsigned char)('M');
-	set_int_in_char(bmpfileheader + 2, filesize);
-	bmpfileheader[10] = (unsigned char)(54);
-	bmpfileheader[14] = (unsigned char)(40);
-	tmp = info->map.width;
-	set_int_in_char(bmpfileheader + 18, tmp);
-	tmp = info->map.height;
-	set_int_in_char(bmpfileheader + 22, tmp);
-	bmpfileheader[27] = (unsigned char)(1);
-	bmpfileheader[28] = (unsigned char)(24);
-	return (!(write(fd, bmpfileheader, 54) < 0));
-}
 
-static int
-	get_color(t_info *info, int x, int y)
-{
-	int	rgb;
-	int	color;
-
-	color = *(int*)(info->img.data
-			+ (info->map.width * (info->map.height - 1 - y))
-			+ (x));
-	rgb = (color & 0xFF0000) | (color & 0x00FF00) | (color & 0x0000FF);
-	return (rgb);
-}
-
-static int
-	write_bmp_data(int file, t_info *info, int pad)
-{
-	const unsigned char	zero[3] = {0, 0, 0};
-	int					i;
-	int					j;
-	int					color;
-
-	i = 0;
-	while (i < (int)info->map.height)
-	{
-		j = 0;
-		while (j < (int)info->map.width)
-		{
-			color = get_color(info, j, i);
-			if (write(file, &color, 3) < 0)
-				return (0);
-			if (pad > 0 && write(file, &zero, pad) < 0)
-				return (0);
-			j++;
-		}
-		i++;
-	}
-	return (1);
-}
- 
 int save_bmp(t_info *info)
 {
-	int filesize;
-	int file;
-	int pad;
+    int height = info->map.height;
+    int width = info->map.width;
+    unsigned char image[height][width][BYTES_PER_PIXEL];
+    char* imageFileName = (char*) "bitmap.bmp";
 
-	pad = (4 - (info->map.width * 3) % 4 ) % 4;
-	printf("pad : %d\n",pad);
-	filesize = 54 + (3 * (info->map.width) * info->map.height);
-	printf("check : %d, filesize : %d\n",filesize % 4,filesize);
-	if ((file = open("screenshot.bmp", O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
-			return (0);
-	if (!write_bmp_header(file, filesize, info))
-		return (0);
-	if (!write_bmp_data(file, info, pad))
-		return (0);
-	close(file);
-	return (1);
+    int i, j;
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            image[i][j][2] = (unsigned char) ( info->screen[i][j] >> 16) & 0xFF;             ///red
+            image[i][j][1] = (unsigned char) ( info->screen[i][j] >> 8) & 0xFF;              ///green
+            image[i][j][0] = (unsigned char) ( info->screen[i][j]) & 0xFF; ///blue
+        }
+    }
+
+    generateBitmapImage((unsigned char*) image, height, width, imageFileName);
+    printf("Image generated!!");
+    return (1);
+}
+
+
+void generateBitmapImage (unsigned char* image, int height, int width, char* imageFileName)
+{
+    int widthInBytes = width * BYTES_PER_PIXEL;
+
+    unsigned char padding[3] = {0, 0, 0};
+    int paddingSize = (4 - (widthInBytes) % 4) % 4;
+
+    int stride = (widthInBytes) + paddingSize;
+
+    FILE* imageFile = fopen(imageFileName, "wb");
+
+    unsigned char* fileHeader = createBitmapFileHeader(height, stride);
+    fwrite(fileHeader, 1, FILE_HEADER_SIZE, imageFile);
+
+    unsigned char* infoHeader = createBitmapInfoHeader(height, width);
+    fwrite(infoHeader, 1, INFO_HEADER_SIZE, imageFile);
+
+    int i;
+    for (i = height - 1; i >= 0; i--) {
+        fwrite(image + (i*widthInBytes), BYTES_PER_PIXEL, width, imageFile);
+        fwrite(padding, 1, paddingSize, imageFile);
+    }
+
+    fclose(imageFile);
+}
+
+unsigned char* createBitmapFileHeader (int height, int stride)
+{
+    int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + (stride * height);
+
+    static unsigned char fileHeader[] = {
+        0,0,     /// signature
+        0,0,0,0, /// image file size in bytes
+        0,0,0,0, /// reserved
+        0,0,0,0, /// start of pixel array
+    };
+
+    fileHeader[ 0] = (unsigned char)('B');
+    fileHeader[ 1] = (unsigned char)('M');
+    fileHeader[ 2] = (unsigned char)(fileSize      );
+    fileHeader[ 3] = (unsigned char)(fileSize >>  8);
+    fileHeader[ 4] = (unsigned char)(fileSize >> 16);
+    fileHeader[ 5] = (unsigned char)(fileSize >> 24);
+    fileHeader[10] = (unsigned char)(FILE_HEADER_SIZE + INFO_HEADER_SIZE);
+
+    return fileHeader;
+}
+
+unsigned char* createBitmapInfoHeader (int height, int width)
+{
+    static unsigned char infoHeader[] = {
+        0,0,0,0, /// header size
+        0,0,0,0, /// image width
+        0,0,0,0, /// image height
+        0,0,     /// number of color planes
+        0,0,     /// bits per pixel
+        0,0,0,0, /// compression
+        0,0,0,0, /// image size
+        0,0,0,0, /// horizontal resolution
+        0,0,0,0, /// vertical resolution
+        0,0,0,0, /// colors in color table
+        0,0,0,0, /// important color count
+    };
+
+    infoHeader[ 0] = (unsigned char)(INFO_HEADER_SIZE);
+    infoHeader[ 4] = (unsigned char)(width      );
+    infoHeader[ 5] = (unsigned char)(width >>  8);
+    infoHeader[ 6] = (unsigned char)(width >> 16);
+    infoHeader[ 7] = (unsigned char)(width >> 24);
+    infoHeader[ 8] = (unsigned char)(height      );
+    infoHeader[ 9] = (unsigned char)(height >>  8);
+    infoHeader[10] = (unsigned char)(height >> 16);
+    infoHeader[11] = (unsigned char)(height >> 24);
+    infoHeader[12] = (unsigned char)(1);
+    infoHeader[14] = (unsigned char)(BYTES_PER_PIXEL*8);
+
+    return infoHeader;
 }
