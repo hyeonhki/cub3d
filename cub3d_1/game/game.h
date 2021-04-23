@@ -70,11 +70,13 @@ typedef struct s_info
 void	ready_screen(t_info *info);
 void	ready_texture(t_info *info);
 void	ready_image(t_info *info);
+void	check_sprite(t_info *info, t_map *map);
 void	game_init(t_info *info);
+
 
 void	load_texture(t_info *info);
 void	load_image(t_info *info, int *texture, char *path, t_img *img);
 
-void config_to_game(t_info *info, t_map *map);
+void	config_to_game(t_info *info, t_map *map);
 
 #endif
