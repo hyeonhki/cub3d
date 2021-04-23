@@ -75,5 +75,6 @@ void	game_init(t_info *info);
 void	load_texture(t_info *info);
 void	load_image(t_info *info, int *texture, char *path, t_img *img);
 
+void config_to_game(t_info *info, t_map *map);
 
 #endif

@@ -63,58 +63,55 @@ void	sortSprites(int *order, double *dist, int amount)
 	free(sprites);
 }
 
-int exit_hook(t_info *info)
-{
-	exit(EXIT_SUCCESS);
-	return(EXIT_SUCCESS);
-}
-
 int	key_press(int key, t_info *info)
 {
 	if (key == KEY_W)
 	{
-		if (info->map.w_map[(int)(info->posX + info->dirX * info->config.movespeed)][(int)(info->posY)] == '0')
-			info->posX += info->dirX * info->config.movespeed;
-		if (info->map.w_map[(int)(info->posX)][(int)(info->posY + info->dirY * info->config.movespeed)] == '0')
-			info->posY += info->dirY * info->config.movespeed;
+		if (info->map.w_map[(int)(info->posX + info->dirX * info->config.moveSpeed)][(int)(info->posY)] == '0')
+			info->posX += info->dirX * info->config.moveSpeed;
+		if (info->map.w_map[(int)(info->posX)][(int)(info->posY + info->dirY * info->config.moveSpeed)] == '0')
+			info->posY += info->dirY * info->config.moveSpeed;
 	}
 	//move backwards if no wall behind you
 	if (key == KEY_S)
 	{
-		if (info->map.w_map[(int)(info->posX - info->dirX * info->config.movespeed)][(int)(info->posY)] == '0')
-			info->posX -= info->dirX * info->config.movespeed;
-		if (info->map.w_map[(int)(info->posX)][(int)(info->posY - info->dirY * info->config.movespeed)] == '0')
-			info->posY -= info->dirY * info->config.movespeed;
+		if (info->map.w_map[(int)(info->posX - info->dirX * info->config.moveSpeed)][(int)(info->posY)] == '0')
+			info->posX -= info->dirX * info->config.moveSpeed;
+		if (info->map.w_map[(int)(info->posX)][(int)(info->posY - info->dirY * info->config.moveSpeed)] == '0')
+			info->posY -= info->dirY * info->config.moveSpeed;
 	}
 	//rotate to the right
 	if (key == KEY_D)
 	{
 		//both camera direction and camera plane must be rotated
 		double oldDirX = info->dirX;
-		info->dirX = info->dirX * cos(-info->config.rotspeed) - info->dirY * sin(-info->config.rotspeed);
-		info->dirY = oldDirX * sin(-info->config.rotspeed) + info->dirY * cos(-info->config.rotspeed);
+		info->dirX = info->dirX * cos(-info->config.rotSpeed) - info->dirY * sin(-info->config.rotSpeed);
+		info->dirY = oldDirX * sin(-info->config.rotSpeed) + info->dirY * cos(-info->config.rotSpeed);
 		double oldPlaneX = info->planeX;
-		info->planeX = info->planeX * cos(-info->config.rotspeed) - info->planeY * sin(-info->config.rotspeed);
-		info->planeY = oldPlaneX * sin(-info->config.rotspeed) + info->planeY * cos(-info->config.rotspeed);
+		info->planeX = info->planeX * cos(-info->config.rotSpeed) - info->planeY * sin(-info->config.rotSpeed);
+		info->planeY = oldPlaneX * sin(-info->config.rotSpeed) + info->planeY * cos(-info->config.rotSpeed);
 	}
 	//rotate to the left
 	if (key == KEY_A)
 	{
 		//both camera direction and camera plane must be rotated
 		double oldDirX = info->dirX;
-		info->dirX = info->dirX * cos(info->config.rotspeed) - info->dirY * sin(info->config.rotspeed);
-		info->dirY = oldDirX * sin(info->config.rotspeed) + info->dirY * cos(info->config.rotspeed);
+		info->dirX = info->dirX * cos(info->config.rotSpeed) - info->dirY * sin(info->config.rotSpeed);
+		info->dirY = oldDirX * sin(info->config.rotSpeed) + info->dirY * cos(info->config.rotSpeed);
 		double oldPlaneX = info->planeX;
-		info->planeX = info->planeX * cos(info->config.rotspeed) - info->planeY * sin(info->config.rotspeed);
-		info->planeY = oldPlaneX * sin(info->config.rotspeed) + info->planeY * cos(info->config.rotspeed);
+		info->planeX = info->planeX * cos(info->config.rotSpeed) - info->planeY * sin(info->config.rotSpeed);
+		info->planeY = oldPlaneX * sin(info->config.rotSpeed) + info->planeY * cos(info->config.rotSpeed);
 	}
 	if (key == KEY_ESC)
 		exit(0);
 	return (0);
 }
 
-void	floor_ceiling_raycast(t_info *info)
+
+
+void	calc(t_info *info)
 {
+	//천장, 바닥 캐스팅
 	for(int y = 0; y < info->config.height; y++)
 	{
 		for(int x = 0; x < info->config.width; ++x)
@@ -123,30 +120,52 @@ void	floor_ceiling_raycast(t_info *info)
 			info->screen[info->config.height - y - 1][x] = info->map.ce_color;
 		}
 	}
-}
-
-
-void	calc(t_info *info)
-{
-	//천장 바닥 
-	floor_ceiling_raycast(info);
 	//벽 캐스팅
 	for (int x = 0; x < info->config.width; x ++)
 	{
+		//카메라가 평면에서 차지하는 x좌표 (-1 ~ 1)
 		double cameraX = 2 * x / (double)info->config.width - 1; 
+		//cameraX를 통해 광선의 방향을 계산
+
+		//rayDir 는 광선의 방향벡터
 		double rayDirX = info->dirX + info->planeX * cameraX;
 		double rayDirY = info->dirY + info->planeY * cameraX; 
+		//광선의 방향벡터는 방햑벡터 + 카메라평면 * 배수로 계산된다.
+		//방햑벡터야 카메라평면의 수직이니 당연히 더해서 계산 가능
+
+		//mapX, mapY는 현재 광선의 위치
+		//광선이 있는 한 칸이다.
+		//광선이 맵상 어느칸에 있는지, 어디쯤 있는지까지 알 수 있지만 int로 간단하게 표기
 		int mapX = (int)info->posX;
 		int mapY = (int)info->posY;
+
+		//시작점 ~ 첫번째 x or y면을 만나는 점까지의 광선의 이동거리
 		double sideDistX;
 		double sideDistY;
+
+		//첫번째 x or y면 부터 바로 다음 x or y 면까지의 광선 이동거리
+		//한번 찾으면 계속 동일한 값을 가진다.
 		double deltaDistX = fabs(1 / rayDirX); //abs대신 fabs
 		double deltaDistY = fabs(1 / rayDirY);
+
+		//나중에 광선의 이동거리를 계산하는 데 사용
 		double perpWallDist;
+
+		//DDA알고리즘을 위해 사용
+		//광선의 방향에 따라 어느 방향으로 건너뛰는 지 달라지는데 그 정보를 저장
+		//+1, -1로 저장된다. 추후 설명
 		int stepX;
 		int stepY;
+
+		//마지막으로 벽의 x면 또는 y면과 부딪쳤는지 여부에 따라 루프를 종료할지 결정한다
+		//hit은 벽과 부딪힌 여부(루프 종료)
+		//부딪힌 곳이 x면이냐 y면이냐에 따 side값 0, 1
 		int hit = 0;
 		int side;
+
+		//광선의 x방향이 양수라면 stepx = +1, 아니면 - 1
+		//y방향도
+		//sideDist는 시작점에서 첫번째 x , y 면을 만나는 점까지의 광선의 이동거리
 		if (rayDirX < 0)
 		{
 			stepX = -1;
@@ -170,6 +189,10 @@ void	calc(t_info *info)
 		}
 		
 		//DDA 알고리즘 시작
+		//벽에 부딪힐 때 까지 반복! 한칸씩!
+		//벽에 부딪히면 그만(hit == 1)
+		//x 면에 부딪히는 거리와 y면에 부딪히는 거리 계산해서 한칸씩만 이동함
+		//정수형 mapX,Y 변수에 +1 씩 더해서 다음칸이 벽이나 물체인지 마지막에 확인하고 hit 넣어줌
 		while (hit == 0)
 		{
 			if (sideDistX < sideDistY)
@@ -249,6 +272,72 @@ void	calc(t_info *info)
 
 		info->screen[y][x] = color;
 		}
+
+	
+	/*
+	//텍스처를 채워주는 듯
+		//FLOOR CASTING (vertical version, directly after drawing the vertical wall stripe for the current x)
+		double floorXWall, floorYWall; //x, y position of the floor texel at the bottom of the wall
+
+		//4 different wall directions possible
+		if(side == 0 && rayDirX > 0)
+		{
+			floorXWall = mapX;
+			floorYWall = mapY + wallX;
+		}
+		else if(side == 0 && rayDirX < 0)
+		{
+			floorXWall = mapX + 1.0;
+			floorYWall = mapY + wallX;
+		}
+		else if(side == 1 && rayDirY > 0)
+		{
+			floorXWall = mapX + wallX;
+			floorYWall = mapY;
+		}
+		else
+		{
+			floorXWall = mapX + wallX;
+			floorYWall = mapY + 1.0;
+		}
+
+		double distWall, distPlayer, currentDist;
+
+		distWall = perpWallDist;
+		distPlayer = 0.0;
+
+		if (drawEnd < 0) drawEnd = info->config.height; //becomes < 0 when the integer overflows
+
+		//draw the floor from drawEnd to the bottom of the screen
+		for(int y = drawEnd + 1; y < info->config.height; y++)
+		{
+			currentDist = info->config.height / (2.0 * y - info->config.height); //you could make a small lookup table for this instead
+
+			double weight = (currentDist - distPlayer) / (distWall - distPlayer);
+
+			double currentFloorX = weight * floorXWall + (1.0 - weight) * info->posX;
+			double currentFloorY = weight * floorYWall + (1.0 - weight) * info->posY;
+
+			int floorTexX, floorTexY;
+			floorTexX = (int)(currentFloorX * info->config.texwidth) % info->config.texwidth;
+			floorTexY = (int)(currentFloorY * info->config.texheight) % info->config.texheight;
+
+			int checkerBoardPattern = ((int)(currentFloorX) + (int)(currentFloorY)) % 2;
+			int floorTexture;
+			if(checkerBoardPattern == 0) floorTexture = 2;
+			else floorTexture = 3;
+
+			//floor
+			//이 부분의 입력을 통해 색깔을 변경할 수 있다.
+			info->screen[y][x] = info->map.fl_color;
+			//info->screen[y][x] = (info->texture[floorTexture][info->config.texwidth * floorTexY + floorTexX] >> 1) & 8355711;
+			//ceiling (symmetrical!)
+			//천장색 변경
+		//	info->screen[info->config.height - y][x] = info->texture[3][info->config.texwidth * floorTexY + floorTexX];
+			info->screen[info->config.height - y][x] = info->map.ce_color;
+			//info->texture[3][info->config.texwidth * floorTexY + floorTexX];
+		}
+		*/
 		info->zBuffer[x] = perpWallDist;
 	}
 	//SPRITE CASTING
@@ -326,19 +415,12 @@ void	calc(t_info *info)
 
 void	draw(t_info *info)
 {
-	int x;
-	int y;
-
-	y = 0;
-	while (y < info->config.height)
+	for (int y = 0; y < info->config.height; y++)
 	{
-		x = 0;
-		while (x < info->config.width)
+		for (int x = 0; x < info->config.width; x++)
 		{
 			info->img.data[y * info->config.width + x] = info->screen[y][x];
-			x++;
 		}
-		y++;
 	}
 	if (info->save_opt == 1)
 	{

@@ -12,8 +12,6 @@
 
 #include "config.h"
 
-//E = cvt 1, W = cvt -1
-
 static int check(t_map *map, int i, int j, int dir)
 {
 	if ((dir == 8) && i <= 0)
