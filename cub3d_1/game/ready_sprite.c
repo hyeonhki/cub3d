@@ -36,31 +36,25 @@ int		count_sprite(t_map *map)
 
 void	check_sprite(t_info *info, t_map *map)
 {
-	int		cnt;
-	int		i;
-	int		j;
-	int		order;
-
-	cnt = count_sprite(map);
-	info->spritenum = cnt;
-	info->sprite = malloc(sizeof(t_sprite) * cnt);
-	i = 0;
-	order = 0;
-	while (i < map->row)
+	info->etc.cnt = count_sprite(map);
+	info->spritenum = info->etc.cnt;
+	info->sprite = malloc(sizeof(t_sprite) * info->etc.cnt);
+	while (info->etc.i < map->row)
 	{
-		j = 0;
-		while (j < map->column)
+		info->etc.j = 0;
+		while (info->etc.j < map->column)
 		{
-			if (map->w_map[i][j] == '2')
+			if (map->w_map[info->etc.i][info->etc.j] == '2')
 			{
-				info->sprite[order].y = j + 0.5;
-				info->sprite[order].x = i + 0.5;
-				info->sprite[order].texture = 4;
-				map->w_map[i][j] = '0';
-				order += 1;
+				info->sprite[info->etc.order].y = info->etc.j + 0.5;
+				info->sprite[info->etc.order].x = info->etc.i + 0.5;
+				info->sprite[info->etc.order].texture = 4;
+				map->w_map[info->etc.i][info->etc.j] = '0';
+				info->etc.order += 1;
 			}
-			j++;
+			info->etc.j++;
 		}
-		i++;
+		info->etc.i++;
 	}
+	set_etc(info);
 }

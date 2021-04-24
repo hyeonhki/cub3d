@@ -60,12 +60,12 @@ int		config_map(t_map *map, char *path)
 	while ((ret = get_next_line(fd, &line) > 0))
 	{
 		if (!line_check(map, line, &maptext))
-			return (error("line check error"));
+			return (0);
 	}
 	line_check(map, line, &maptext);
 	parse_map(map, maptext);
 	if (!map_element_check(map))
-		return (error("map element error"));
+		return (exit_error("map element error"));
 	player_init(map);
 	valid_map_check(map, map->player.x, map->player.y);
 	map_reset(map);

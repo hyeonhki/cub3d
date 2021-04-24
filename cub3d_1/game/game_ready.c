@@ -20,12 +20,27 @@ void	ready_screen(t_info *info)
 
 void	ready_texture(t_info *info)
 {
-	info->texture = ft_2d_malloc(info->config.texnum, info->config.texheight * info->config.texwidth);
-	ft_reset(info->texture, info->config.texnum, info->config.texheight*info->config.texwidth);
+	info->texture = ft_2d_malloc(info->config.texnum, \
+		info->config.texheight * info->config.texwidth);
+	ft_reset(info->texture, info->config.texnum, \
+		info->config.texheight * info->config.texwidth);
 }
 
 void	ready_image(t_info *info)
 {
-	info->img.img = mlx_new_image(info->mlx, info->config.width, info->config.height);
-	info->img.data = (int *)mlx_get_data_addr(info->img.img, &info->img.bpp, &info->img.size_l, &info->img.endian);
+	info->img.img = \
+	mlx_new_image(info->mlx, info->config.width, info->config.height);
+	info->img.data = (int *)mlx_get_data_addr(info->img.img, \
+		&info->img.bpp, &info->img.size_l, &info->img.endian);
+}
+
+void	set_etc(t_info *info)
+{
+	info->etc.i = 0;
+	info->etc.j = 0;
+	info->etc.k = 0;
+	info->etc.cnt = 0;
+	info->etc.order = 0;
+	info->etc.x = 0;
+	info->etc.y = 0;
 }

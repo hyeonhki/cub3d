@@ -71,9 +71,10 @@ int ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
-int error(char *str)
+int exit_error(char *str)
 {
 	printf("Error\n");
 	printf("%s\n",str);
+	exit(EXIT_SUCCESS);
 	return (0);
 }

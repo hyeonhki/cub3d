@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
 	info.save_opt = (argc > 2 && ft_strcmp(argv[2], "-save"));
 	if (argc < 2 || argc > 3)
-		return (error("argc error"));
+		return (exit_error("argc error"));
 	config_init(&info.config);
 	if (!config_map(&info.map, argv[1]))
 		return (0);

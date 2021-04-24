@@ -17,12 +17,12 @@ int		read_size(t_map *map, char *line)
 	int		i;
 
 	if (map->r_check++ != 0)
-		return (0);
+		return (exit_error("R : Overlap\n"));
 	i = 0;
 	if (line[i] == 'R' && line[i + 1] == ' ')
 		i += 2;
 	else
-		return (0);
+		return (exit_error("R : Wrong form\n"));
 	map->width = 0;
 	map->height = 0;
 	while (line[i] == ' ')
@@ -34,14 +34,14 @@ int		read_size(t_map *map, char *line)
 	while (line[i] >= '0' && line[i] <= '9')
 		map->height = map->height * 10 + (line[i++] - '0');
 	if (line[i] != '\0')
-		return (0);
+		return (exit_error("R : not EOF\n"));
 	return (1);
 }
 
 int		read_color(t_map *map, char *line, int *color, int *cnt)
 {
 	if ((*cnt)++ != 0)
-		return (0);
+		return (exit_error("Color : Overlap\n"));
 	map->j = 3;
 	map->i = 2;
 	while (map->j > 0)
@@ -57,12 +57,12 @@ int		read_color(t_map *map, char *line, int *color, int *cnt)
 			if (line[map->i] == ',')
 				map->i += 1;
 			else
-				return (0);
+				return (exit_error("Color : Wrong form\n"));
 		}
 		map->j--;
 	}
 	if (line[map->i] != '\0')
-		return (0);
+		return (exit_error("Color : not EOF\n"));
 	return (1);
 }
 
@@ -83,12 +83,12 @@ int		parse_texture_path(t_map *map, char *line)
 	else if (line[i] == 'S' && line[i + 1] == ' ')
 		path = &map->sp;
 	else
-		return (0);
+		return (exit_error("Texture : Wrong form\n"));
 	i += 2;
 	while (line[i] == ' ')
 		i++;
 	if (*path != 0)
-		return (0);
+		return (exit_error("Texture : Overlap\n"));
 	*path = line + i;
 	return (1);
 }
@@ -96,21 +96,21 @@ int		parse_texture_path(t_map *map, char *line)
 int		map_order_check(t_map *map)
 {
 	if (map->r_check == 0)
-		return (0);
+		return (exit_error("R Not exist"));
 	else if (map->no == 0)
-		return (0);
+		return (exit_error("Texture:NO Not exist"));
 	else if (map->so == 0)
-		return (0);
+		return (exit_error("Texture:SO Not exist"));
 	else if (map->we == 0)
-		return (0);
+		return (exit_error("Texture:WE exist"));
 	else if (map->ea == 0)
-		return (0);
+		return (exit_error("Texture:EA Not exist"));
 	else if (map->sp == 0)
-		return (0);
+		return (exit_error("Texture:Sprite Not exist"));
 	else if (map->ce_check == 0)
-		return (0);
+		return (exit_error("Ceiling Color Not exist"));
 	else if (map->fl_check == 0)
-		return (0);
+		return (exit_error("Floor Color Not exist"));
 	return (1);
 }
 
@@ -135,6 +135,6 @@ int		line_check(t_map *map, char *line, char **maptext)
 	else if (*line == '\0')
 		return (1);
 	else
-		return (0);
+		return (exit_error("Something wrong input at .cub\n"));
 	return (1);
 }
