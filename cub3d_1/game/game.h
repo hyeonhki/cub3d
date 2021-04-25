@@ -53,20 +53,8 @@ typedef struct	s_etc
 	int			order;
 }				t_etc;
 
-//추후 다 일로 옮겨서 파일분할 시 사용할 예정
-/*
-typedef struct	s_game
+typedef struct	s_wall
 {
-	//사용자의 위치
-	double		posx;
-	double		posy;
-	//플레이어의 초기 방향벡터 (카메라 평면의 수직)
-	double		dirx;
-	double		diry;
-	//카메라평면 (왜 X,Y 두개지?)
-	double		planex;
-	double		planey;
-	
 	double		camera_x;
 	double		raydir_x;
 	double		raydir_y;
@@ -91,44 +79,11 @@ typedef struct	s_game
 	double		texpos;
 	int			texy;
 	int			color;
-
-	//Sprite
-	int			*spriteorder;
-	double		*spritedistance;
-	double		spritex;
-	double		spritey;
-	double		invDet;
-	double		transformx;
-	double		transformy;
-	int			spritescreenx;
-
-	int			uDiv;
-	int			vDiv;
-	double		vMove;
-
-	int			vMoveScreen;
-	int			spriteHeight;
-	int			drawstarty;
-	int			drawendy;
-	int			spritewidth;
-	int			drawstartx;
-	int			drawendx;
-	int			sprite;
-	int			d;
-	int			texy;
-	int			color;
+}				t_wall;
 
 
-}				t_game;
-*/
-
-
-typedef struct	s_info
+typedef struct	s_game
 {
-	//잡기들
-	t_etc		etc;
-	//save opt
-	int			save_opt;
 	//사용자의 위치
 	double		posx;
 	double		posy;
@@ -138,20 +93,30 @@ typedef struct	s_info
 	//카메라평면 (왜 X,Y 두개지?)
 	double		planex;
 	double		planey;
+	
+	t_wall		wall;
+}				t_game;
 
+
+
+typedef struct	s_info
+{
 	void		*mlx;
 	void		*win;
-
+	//save opt
+	int			save_opt;
+	
+	//잡기들
+	t_etc		etc;
 	t_img		img;
 	t_config	config;
-//	t_game		game;
-
-	int			spritenum;
+	t_game		game;
+	int			spritenum; //cub3d에 5번 info->spritenum
 	t_map		map;
-	t_sprite	*sprite;
+	t_sprite	*sprite; //cub3d 7번
 
-	int			**screen;
-	int			**texture;
+	int			**screen; //3번
+	int			**texture; //5번
 
 	double		zBuffer[1024]; //벽 캐스팅에서 잰 거리를 저장하고 스프라이트 구현에 사용
 
@@ -168,7 +133,7 @@ void			set_etc(t_info *info);
 void			load_texture(t_info *info);
 void			load_image(t_info *info, int *texture, char *path, t_img *img);
 
-void			config_to_game(t_info *info, t_map *map);
+void			config_to_game(t_info *info, t_game *game, t_map *map);
 
 
 void			floor_ceiling_raycast(t_info *info);

@@ -29,7 +29,7 @@
 void	draw(t_info *info);
 void	calc(t_info *info);
 int main_loop(t_info *info);
-int	key_press(int key, t_info *info);
+int	key_press(int key, t_info *info, t_game *game);
 int save_bmp(t_info *info);
 int exit_hook(t_info *info);
 

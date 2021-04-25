@@ -63,44 +63,44 @@ int exit_hook(t_info *info)
 	return(EXIT_SUCCESS);
 }
 
-int	key_press(int key, t_info *info)
+int	key_press(int key, t_info *info, t_game *game)
 {
 	if (key == KEY_W)
 	{
-		if (info->map.w_map[(int)(info->posx + info->dirx * info->config.movespeed)][(int)(info->posy)] == '0')
-			info->posx += info->dirx * info->config.movespeed;
-		if (info->map.w_map[(int)(info->posx)][(int)(info->posy + info->diry * info->config.movespeed)] == '0')
-			info->posy += info->diry * info->config.movespeed;
+		if (info->map.w_map[(int)(game->posx + game->dirx * info->config.movespeed)][(int)(game->posy)] == '0')
+			game->posx += game->dirx * info->config.movespeed;
+		if (info->map.w_map[(int)(game->posx)][(int)(game->posy + game->diry * info->config.movespeed)] == '0')
+			game->posy += game->diry * info->config.movespeed;
 	}
 	//move backwards if no wall behind you
 	if (key == KEY_S)
 	{
-		if (info->map.w_map[(int)(info->posx - info->dirx * info->config.movespeed)][(int)(info->posy)] == '0')
-			info->posx -= info->dirx * info->config.movespeed;
-		if (info->map.w_map[(int)(info->posx)][(int)(info->posy - info->diry * info->config.movespeed)] == '0')
-			info->posy -= info->diry * info->config.movespeed;
+		if (info->map.w_map[(int)(game->posx - game->dirx * info->config.movespeed)][(int)(game->posy)] == '0')
+			game->posx -= game->dirx * info->config.movespeed;
+		if (info->map.w_map[(int)(game->posx)][(int)(game->posy - game->diry * info->config.movespeed)] == '0')
+			game->posy -= game->diry * info->config.movespeed;
 	}
 	//rotate to the right
 	if (key == KEY_D)
 	{
 		//both camera direction and camera plane must be rotated
-		double olddirx = info->dirx;
-		info->dirx = info->dirx * cos(-info->config.rotspeed) - info->diry * sin(-info->config.rotspeed);
-		info->diry = olddirx * sin(-info->config.rotspeed) + info->diry * cos(-info->config.rotspeed);
-		double oldplanex = info->planex;
-		info->planex = info->planex * cos(-info->config.rotspeed) - info->planey * sin(-info->config.rotspeed);
-		info->planey = oldplanex * sin(-info->config.rotspeed) + info->planey * cos(-info->config.rotspeed);
+		double olddirx = game->dirx;
+		game->dirx = game->dirx * cos(-info->config.rotspeed) - game->diry * sin(-info->config.rotspeed);
+		game->diry = olddirx * sin(-info->config.rotspeed) + game->diry * cos(-info->config.rotspeed);
+		double oldplanex = game->planex;
+		game->planex = game->planex * cos(-info->config.rotspeed) - game->planey * sin(-info->config.rotspeed);
+		game->planey = oldplanex * sin(-info->config.rotspeed) + game->planey * cos(-info->config.rotspeed);
 	}
 	//rotate to the left
 	if (key == KEY_A)
 	{
 		//both camera direction and camera plane must be rotated
-		double olddirx = info->dirx;
-		info->dirx = info->dirx * cos(info->config.rotspeed) - info->diry * sin(info->config.rotspeed);
-		info->diry = olddirx * sin(info->config.rotspeed) + info->diry * cos(info->config.rotspeed);
-		double oldplanex = info->planex;
-		info->planex = info->planex * cos(info->config.rotspeed) - info->planey * sin(info->config.rotspeed);
-		info->planey = oldplanex * sin(info->config.rotspeed) + info->planey * cos(info->config.rotspeed);
+		double olddirx = game->dirx;
+		game->dirx = game->dirx * cos(info->config.rotspeed) - game->diry * sin(info->config.rotspeed);
+		game->diry = olddirx * sin(info->config.rotspeed) + game->diry * cos(info->config.rotspeed);
+		double oldplanex = game->planex;
+		game->planex = game->planex * cos(info->config.rotspeed) - game->planey * sin(info->config.rotspeed);
+		game->planey = oldplanex * sin(info->config.rotspeed) + game->planey * cos(info->config.rotspeed);
 	}
 	if (key == KEY_ESC)
 		exit(0);
@@ -112,13 +112,14 @@ void	calc(t_info *info)
 	//천장 바닥 
 	floor_ceiling_raycast(info);
 	//벽 캐스팅
+	wall_raycast(info, &info->game);
 	for (int x = 0; x < info->config.width; x ++)
 	{
 		double camera_x = 2 * x / (double)info->config.width - 1; 
 		double raydir_x = info->dirx + info->planex * camera_x;
 		double raydir_y = info->diry + info->planey * camera_x; 
-		int map_x = (int)info->posx;
-		int map_y = (int)info->posy;
+		int map_x = (int)game->posx;
+		int map_y = (int)game->posy;
 		double sidedist_x;
 		double sidedist_y;
 		double deltadist_x = fabs(1 / raydir_x); //abs대신 fabs
