@@ -5,5 +5,5 @@ all:
 	config/config.c config/player_init.c config/map_making.c config/map_check.c config/map_parse.c config/parsing_line.c config/valid_map_player.c \
 	gnl/get_next_line.c gnl/get_next_line_utils.c \
 	game/game.c game/ready_sprite.c game/game_ready.c game/texture_image.c \
-	game/raycast_floor_ceiling.c
+	game/raycast_floor_ceiling.c game/wall_raycast.c game/sprite_raycast.c
 	./a.out maps/map2.cub

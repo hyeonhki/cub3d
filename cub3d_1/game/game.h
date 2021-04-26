@@ -17,24 +17,30 @@
 #include "../utils/utils.h"
 #include "../config/config.h"
 
-typedef struct s_sprite
+typedef struct		s_pair
 {
-	double x;
-	double y;
-	int texture;
-}	t_sprite;
+	double	first;
+	int		second;
+}					t_pair;
 
-typedef struct s_img
+typedef struct	s_sprite
 {
-	void	*img;
-	int		*data;
+	double		x;
+	double		y;
+	int			texture;
+}				t_sprite;
 
-	int		size_l;
-	int		bpp;
-	int		endian;
-	int		img_width;
-	int		img_height;
-}	t_img;
+typedef struct	s_img
+{
+	void		*img;
+	int			*data;
+
+	int			size_l;
+	int			bpp;
+	int			endian;
+	int			img_width;
+	int			img_height;
+}				t_img;
 
 typedef struct	s_etc
 {
@@ -47,10 +53,28 @@ typedef struct	s_etc
 	int			order;
 }				t_etc;
 
-typedef struct s_info
+typedef struct	s_raysp
 {
-	//save opt
-	int		save_opt;
+	double		spritex;
+	double		spritey;
+
+	double		invDet;
+	double		transformx;
+	double		transformy;
+
+	int			spriteScreenx;
+
+	int			vMoveScreen;
+	int			spriteHeight;
+	int			drawStarty;
+	int			drawEndy;
+	int			spriteWidth;
+	int			drawStartx;
+	int			drawEndx;
+}				t_raysp;
+
+typedef struct	s_game
+{
 	//사용자의 위치
 	double	posx;
 	double	posy;
@@ -61,23 +85,32 @@ typedef struct s_info
 	double	planex;
 	double	planey;
 
-	void	*mlx;
-	void	*win;
-	
-	t_img	img;
+	t_raysp	raysp;
+}				t_game;
+
+typedef struct	s_info
+{
+	//save opt
+	int			save_opt;
+
+	void		*mlx;
+	void		*win;
+
+	t_img		img;
 	t_config	config;
-	t_etc	etc;
+	t_etc		etc;
+	t_game		game;
 
-	int		spritenum;
-	t_map	map;
+	int			spritenum;
+	t_map		map;
 	t_sprite	*sprite;
-	
-	int		**screen;
-	int		**texture;
 
-	double zBuffer[1024];
+	int			**screen;
+	int			**texture;
 
-}	t_info;
+	double		zBuffer[1024];
+
+}				t_info;
 
 void	ready_screen(t_info *info);
 void	ready_texture(t_info *info);
@@ -93,5 +126,6 @@ void	load_image(t_info *info, int *texture, char *path, t_img *img);
 void	config_to_game(t_info *info, t_map *map);
 
 void	floor_ceiling_raycast(t_info *info);
-
+void	wall_raycast(t_info *info, t_game *game);
+void	sprite_raycast(t_info *info, t_game *game);
 #endif
