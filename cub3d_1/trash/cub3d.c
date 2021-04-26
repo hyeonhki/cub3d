@@ -15,12 +15,6 @@
 #define mapwidth 24
 #define mapheight 24
 
-typedef struct		s_pair
-{
-	double	first;
-	int		second;
-}					t_pair;
-
 void	sort_order(t_pair *orders, int amount)
 {
 	t_pair	tmp;
@@ -73,172 +67,173 @@ int	key_press(int key, t_info *info)
 {
 	if (key == KEY_W)
 	{
-		if (info->map.w_map[(int)(info->posx + info->dirx * info->config.movespeed)][(int)(info->posy)] == '0')
-			info->posx += info->dirx * info->config.movespeed;
-		if (info->map.w_map[(int)(info->posx)][(int)(info->posy + info->diry * info->config.movespeed)] == '0')
-			info->posy += info->diry * info->config.movespeed;
+		if (info->map.w_map[(int)(info->game.posx + info->game.dirx * info->config.movespeed)][(int)(info->game.posy)] == '0')
+			info->game.posx += info->game.dirx * info->config.movespeed;
+		if (info->map.w_map[(int)(info->game.posx)][(int)(info->game.dirx + info->game.diry * info->config.movespeed)] == '0')
+			info->game.posy += info->game.diry * info->config.movespeed;
 	}
 	//move backwards if no wall behind you
 	if (key == KEY_S)
 	{
-		if (info->map.w_map[(int)(info->posx - info->dirx * info->config.movespeed)][(int)(info->posy)] == '0')
-			info->posx -= info->dirx * info->config.movespeed;
-		if (info->map.w_map[(int)(info->posx)][(int)(info->posy - info->diry * info->config.movespeed)] == '0')
-			info->posy -= info->diry * info->config.movespeed;
+		if (info->map.w_map[(int)(info->game.posx - info->game.dirx * info->config.movespeed)][(int)(info->game.posy)] == '0')
+			info->game.posx -= info->game.dirx * info->config.movespeed;
+		if (info->map.w_map[(int)(info->game.posx)][(int)(info->game.posy - info->game.diry * info->config.movespeed)] == '0')
+			info->game.posy -= info->game.diry * info->config.movespeed;
 	}
 	//rotate to the right
 	if (key == KEY_D)
 	{
 		//both camera direction and camera plane must be rotated
-		double oldDirx = info->dirx;
-		info->dirx = info->dirx * cos(-info->config.rotspeed) - info->diry * sin(-info->config.rotspeed);
-		info->diry = oldDirx * sin(-info->config.rotspeed) + info->diry * cos(-info->config.rotspeed);
-		double oldPlanex = info->planex;
-		info->planex = info->planex * cos(-info->config.rotspeed) - info->planey * sin(-info->config.rotspeed);
-		info->planey = oldPlanex * sin(-info->config.rotspeed) + info->planey * cos(-info->config.rotspeed);
+		double olddirx = info->game.dirx;
+		info->game.dirx = info->game.dirx * cos(-info->config.rotspeed) - info->game.diry * sin(-info->config.rotspeed);
+		info->game.diry = olddirx * sin(-info->config.rotspeed) + info->game.diry * cos(-info->config.rotspeed);
+		double oldplanex = info->game.planex;
+		info->game.planex = info->game.planex * cos(-info->config.rotspeed) - info->game.planey * sin(-info->config.rotspeed);
+		info->game.planey = oldplanex * sin(-info->config.rotspeed) + info->game.planey * cos(-info->config.rotspeed);
 	}
 	//rotate to the left
 	if (key == KEY_A)
 	{
 		//both camera direction and camera plane must be rotated
-		double oldDirx = info->dirx;
-		info->dirx = info->dirx * cos(info->config.rotspeed) - info->diry * sin(info->config.rotspeed);
-		info->diry = oldDirx * sin(info->config.rotspeed) + info->diry * cos(info->config.rotspeed);
-		double oldPlanex = info->planex;
-		info->planex = info->planex * cos(info->config.rotspeed) - info->planey * sin(info->config.rotspeed);
-		info->planey = oldPlanex * sin(info->config.rotspeed) + info->planey * cos(info->config.rotspeed);
+		double olddirx = info->game.dirx;
+		info->game.dirx = info->game.dirx * cos(info->config.rotspeed) - info->game.diry * sin(info->config.rotspeed);
+		info->game.diry = olddirx * sin(info->config.rotspeed) + info->game.diry * cos(info->config.rotspeed);
+		double oldplanex = info->game.planex;
+		info->game.planex = info->game.planex * cos(info->config.rotspeed) - info->game.planey * sin(info->config.rotspeed);
+		info->game.planey = oldplanex * sin(info->config.rotspeed) + info->game.planey * cos(info->config.rotspeed);
 	}
 	if (key == KEY_ESC)
 		exit(0);
 	return (0);
 }
 
-
-
 void	calc(t_info *info)
 {
+	t_game *game;
+	game = &info->game;
 	//천장 바닥 
 	floor_ceiling_raycast(info);
 	//벽 캐스팅
+//	wall_raycast(info, game);
 	for (int x = 0; x < info->config.width; x ++)
 	{
-		double camerax = 2 * x / (double)info->config.width - 1; 
-		double rayDirx = info->dirx + info->planex * camerax;
-		double rayDiry = info->diry + info->planey * camerax; 
-		int mapx = (int)info->posx;
-		int mapy = (int)info->posy;
-		double sideDistx;
-		double sideDisty;
-		double deltaDistx = fabs(1 / rayDirx); //abs대신 fabs
-		double deltaDisty = fabs(1 / rayDiry);
-		double perpWallDist;
-		int stepx;
-		int stepy;
+		double camera_x = 2 * x / (double)info->config.width - 1; 
+		double raydir_x = game->dirx + game->planex * camera_x;
+		double raydir_y = game->diry + game->planey * camera_x; 
+		int map_x = (int)game->posx;
+		int map_y = (int)game->posy;
+		double sidedist_x;
+		double sidedist_y;
+		double deltadist_x = fabs(1 / raydir_x); //abs대신 fabs
+		double deltadist_y = fabs(1 / raydir_y);
+		double perp_walldist;
+		int step_x;
+		int step_y;
 		int hit = 0;
 		int side;
-		if (rayDirx < 0)
+		if (raydir_x < 0)
 		{
-			stepx = -1;
+			step_x = -1;
 			//double		double		int(info->posx)
-			sideDistx = (info->posx - mapx) * deltaDistx;
+			sidedist_x = (game->posx - map_x) * deltadist_x;
 		}
 		else
 		{
-			stepx = 1;
-			sideDistx = (mapx + 1.0 - info->posx) * deltaDistx;
+			step_x = 1;
+			sidedist_x = (map_x + 1.0 - game->posx) * deltadist_x;
 		}
-		if (rayDiry < 0)
+		if (raydir_y < 0)
 		{
-			stepy = -1;
-			sideDisty = (info->posy - mapy) * deltaDisty;
+			step_y = -1;
+			sidedist_y = (game->posy - map_y) * deltadist_y;
 		}
 		else
 		{
-			stepy = 1;
-			sideDisty = (mapy + 1.0 - info->posy) * deltaDisty;
+			step_y = 1;
+			sidedist_y = (map_y + 1.0 - game->posy) * deltadist_y;
 		}
 		
 		//DDA 알고리즘 시작
 		while (hit == 0)
 		{
-			if (sideDistx < sideDisty)
+			if (sidedist_x < sidedist_y)
 			{
-				sideDistx += deltaDistx;
-				mapx += stepx;
+				sidedist_x += deltadist_x;
+				map_x += step_x;
 				side = 0;
 			}
 			else
 			{
-				sideDisty += deltaDisty;
-				mapy += stepy;
+				sidedist_y += deltadist_y;
+				map_y += step_y;
 				side = 1;
 			}
-			if (info->map.w_map[mapx][mapy] == '1') //이래야 2가 스프라이트로 출력되지 않을까?
+			if (info->map.w_map[map_x][map_y] == '1') //이래야 2가 스프라이트로 출력되지 않을까?
 				hit = 1;
 			//DDA완료를 통해 광선의 시작점에서 벽까지의 이동거리 계산완료
 		}
 		//어안렌즈 효과의 해결
 		//보정코드 추가 없이 방지하는 방법
-		//perpwalldist는 광선의 이동거리(수직거리)
+		//perp_walldist는 광선의 이동거리(수직거리)
 		if (side == 0) //처음으로 부딪힌 면이 x면이라면, 광선이 x 방향으로 몇 칸 갔는 지 나타내는 수
-			perpWallDist = (mapx - info->posx + (1 - stepx) / 2) / rayDirx;
+			perp_walldist = (map_x - game->posx + (1 - step_x) / 2) / raydir_x;
 		else //y면에 부딪혔을 때
-			perpWallDist = (mapy - info->posy + (1 - stepy) / 2) / rayDiry;
+			perp_walldist = (map_y - game->posy + (1 - step_y) / 2) / raydir_y;
 
 		//화면까지의 수직거리를 통해 그려낼 벽 길이 잡기
-		int lineheight = (int)(info->config.height / perpWallDist);
+		int lineheight = (int)(info->config.height / perp_walldist);
 
 		//벽 그릴 시작 y위치
-		int drawStart = -lineheight / 2 + info->config.height / 2;
+		int drawstart = -lineheight / 2 + info->config.height / 2;
 		// 0 이하면 화면맨끝부터 벽
-		if (drawStart < 0)
-			drawStart = 0;
-		int drawEnd = lineheight / 2 + info->config.height / 2;
-		if (drawEnd >= info->config.height)
-			drawEnd = info->config.height - 1;
+		if (drawstart < 0)
+			drawstart = 0;
+		int drawend = lineheight / 2 + info->config.height / 2;
+		if (drawend >= info->config.height)
+			drawend = info->config.height - 1;
 
 		// 텍스터 계산
-	//	int texNum = info->map.w_map[mapx][mapy] - 1;
+	//	int texNum = info->map.w_map[map_x][map_y] - 1;
 		//1을 빼주는 이유는 지도에 0부터 8까지로 채워놨는데
 		//0은 없는 거고 1부터 8까지 텍스처라 1빼서 0부터 7까지로
 
 		double wallx; //광선이 부딪힌 벽의 정확한 위치
 		if (side == 0)
-			wallx = info->posy + perpWallDist * rayDiry;
+			wallx = game->posy + perp_walldist * raydir_y;
 		else
-			wallx = info->posx + perpWallDist * rayDirx;
+			wallx = game->posx + perp_walldist * raydir_x;
 		//floor는 내림함수
 		wallx -= floor(wallx);
 		//이러면 wallx는 1이하 소수점만 남는다?
 		//텍스처의 x좌표 나타내기
 		int texx = (int)(wallx * (double)info->config.texwidth);
-		if (side == 0 && rayDirx > 0)
+		if (side == 0 && raydir_x > 0)
 			texx = info->config.texwidth - texx - 1;
-		if (side == 1 && rayDiry < 0)
+		if (side == 1 && raydir_y < 0)
 			texx = info->config.texwidth - texx - 1;
 		
 		double step = 1.0 * info->config.texheight / lineheight;
-		double texPos = (drawStart - info->config.height / 2 + lineheight / 2) * step;
-		for (int y = drawStart; y < drawEnd; y++)
+		double texPos = (drawstart - info->config.height / 2 + lineheight / 2) * step;
+		for (int y = drawstart; y < drawend; y++)
 		{
 			int texy = (int)texPos & (info->config.texheight - 1); //갑자기 비트연산 &?
 			texPos += step;
 
 			int color;
 			// = info->texture[texNum][info->config.texheight * texy + texx];
-			if (side == 1 && rayDiry > 0)
+			if (side == 1 && raydir_y > 0)
 				color = info->texture[0][info->config.texheight * texy + texx];
-			else if (side == 1 && rayDiry < 0)
+			else if (side == 1 && raydir_y < 0)
 				color = info->texture[1][info->config.texheight * texy + texx];
-			else if (side == 0 && rayDirx > 0)
+			else if (side == 0 && raydir_x > 0)
 				color = info->texture[2][info->config.texheight * texy + texx];
-			if (side == 0 && rayDirx < 0)
+			if (side == 0 && raydir_x < 0)
 				color = info->texture[3][info->config.texheight * texy + texx];
 			//	color = (color >> 1) & 8355711;
 
 		info->screen[y][x] = color;
 		}
-		info->zBuffer[x] = perpWallDist;
+		info->zBuffer[x] = perp_walldist;
 	}
 	//SPRITE CASTING
 	//sort sprites from far to close
@@ -247,7 +242,7 @@ void	calc(t_info *info)
 	for(int i = 0; i < info->spritenum; i++)
 	{
 		spriteOrder[i] = i;
-		spriteDistance[i] = ((info->posx - info->sprite[i].x) * (info->posx - info->sprite[i].x) + (info->posy - info->sprite[i].y) * (info->posy - info->sprite[i].y)); //sqrt not taken, unneeded
+		spriteDistance[i] = ((game->posx - info->sprite[i].x) * (game->posx - info->sprite[i].x) + (game->posy - info->sprite[i].y) * (game->posy - info->sprite[i].y)); //sqrt not taken, unneeded
 	}
 	//스프라이트 하나라 정렬 필요없는 듯
 	sortSprites(spriteOrder, spriteDistance, info->spritenum);
@@ -255,18 +250,18 @@ void	calc(t_info *info)
 	for(int i = 0; i < info->spritenum; i++)
 	{
 			//translate sprite position to relative to camera
-			double spritex = info->sprite[spriteOrder[i]].x - info->posx;
-			double spritey = info->sprite[spriteOrder[i]].y - info->posy;
+			double spritex = info->sprite[spriteOrder[i]].x - game->posx;
+			double spritey = info->sprite[spriteOrder[i]].y - game->posy;
 
 			//transform sprite with the inverse camera matrix
 			// [ planex   dirx ] -1                                       [ diry      -dirx ]
 			// [               ]       =  1/(planex*diry-dirx*planey) *   [                 ]
 			// [ planey   diry ]                                          [ -planey  planex ]
 
-			double invDet = 1.0 / (info->planex * info->diry - info->dirx * info->planey); //required for correct matrix multiplication
+			double invDet = 1.0 / (game->planex * game->diry - game->dirx * game->planey); //required for correct matrix multiplication
 
-			double transformx = invDet * (info->diry * spritex - info->dirx * spritey);
-			double transformy = invDet * (-info->planey * spritex + info->planex * spritey); //this is actually the depth inside the screen, that what Z is in 3D, the distance of sprite to player, matching sqrt(spriteDistance[i])
+			double transformx = invDet * (game->diry * spritex - game->dirx * spritey);
+			double transformy = invDet * (-game->planey * spritex + game->planex * spritey); //this is actually the depth inside the screen, that what Z is in 3D, the distance of sprite to player, matching sqrt(spriteDistance[i])
 
 			int spriteScreenx = (int)((info->config.width / 2) * (1 + transformx / transformy));
 
@@ -279,21 +274,21 @@ void	calc(t_info *info)
 			//calculate height of the sprite on screen
 			int spriteHeight = (int)fabs((info->config.height / transformy) / vDiv); //using "transformy" instead of the real distance prevents fisheye
 			//calculate lowest and highest pixel to fill in current stripe
-			int drawStarty = -spriteHeight / 2 + info->config.height / 2 + vMoveScreen;
-			if(drawStarty < 0) drawStarty = 0;
-			int drawEndy = spriteHeight / 2 + info->config.height / 2 + vMoveScreen;
-			if(drawEndy >= info->config.height) drawEndy = info->config.height - 1;
+			int drawstarty = -spriteHeight / 2 + info->config.height / 2 + vMoveScreen;
+			if(drawstarty < 0) drawstarty = 0;
+			int drawendy = spriteHeight / 2 + info->config.height / 2 + vMoveScreen;
+			if(drawendy >= info->config.height) drawendy = info->config.height - 1;
 
 			//calculate width of the sprite
 			int spriteWidth = (int)fabs((info->config.height / transformy) / uDiv);
-			int drawStartx = -spriteWidth / 2 + spriteScreenx;
-			if(drawStartx < 0) drawStartx = 0;
-			int drawEndx = spriteWidth / 2 + spriteScreenx;
-			if(drawEndx >= info->config.width) drawEndx = info->config.width - 1;
+			int drawstartx = -spriteWidth / 2 + spriteScreenx;
+			if(drawstartx < 0) drawstartx = 0;
+			int drawendx = spriteWidth / 2 + spriteScreenx;
+			if(drawendx >= info->config.width) drawendx = info->config.width - 1;
 
-		//	printf("%d, %d\n",drawStartx, drawEndx);
+		//	printf("%d, %d\n",drawstartx, drawendx);
 			//loop through every vertical stripe of the sprite on screen
-			for(int stripe = drawStartx; stripe < drawEndx; stripe++)
+			for(int stripe = drawstartx; stripe < drawendx; stripe++)
 			{
 				int texx = (int)((256 * (stripe - (-spriteWidth / 2 + spriteScreenx)) * info->config.texwidth / spriteWidth) / 256);
 				//the conditions in the if are:
@@ -302,7 +297,7 @@ void	calc(t_info *info)
 				//3) it's on the screen (right)
 				//4) ZBuffer, with perpendicular distance
 				if(transformy > 0 && stripe > 0 && stripe < info->config.width && transformy < info->zBuffer[stripe])
-				for(int y = drawStarty; y < drawEndy; y++) //for every pixel of the current stripe
+				for(int y = drawstarty; y < drawendy; y++) //for every pixel of the current stripe
 				{
 					int d = (y-vMoveScreen) * 256 - info->config.height * 128 + spriteHeight * 128; //256 and 128 factors to avoid floats
 					int texy = ((d * info->config.texheight) / spriteHeight) / 256;

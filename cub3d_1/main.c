@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	config_init(&info.config);
 	if (!config_map(&info.map, argv[1]))
 		return (0);
-	config_to_game(&info, &info.game, &info.map);
+	config_to_game(&info, &info.map);
 	game_init(&info);
 	load_texture(&info);
 	//기본 유지되는 hook (계산하고 그리기)

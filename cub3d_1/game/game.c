@@ -12,31 +12,32 @@
 
 #include "game.h"
 
-void	config_to_game(t_info *info, t_game *game, t_map *map)
+void	config_to_game(t_info *info, t_map *map)
 {
+	
 	info->config.width = map->width;
 	info->config.height = map->height;
-	game->posx = map->player.x + 0.5;
-	game->posy = map->player.y + 0.5;
+	info->posx = map->player.x + 0.5;
+	info->posy = map->player.y + 0.5;
 	if (map->player.dir == 'N')
 	{
-		game->dirx = -1.0;
-		game->planey = 0.66;
+		info->dirx = -1.0;
+		info->planey = 0.66;
 	}
 	if (map->player.dir == 'S')
 	{
-		game->dirx = 1.0;
-		game->planey = -0.66;
+		info->dirx = 1.0;
+		info->planey = -0.66;
 	}
 	if (map->player.dir == 'E')
 	{
-		game->diry = 1.0;
-		game->planex = 0.66;
+		info->diry = 1.0;
+		info->planex = 0.66;
 	}
 	if (map->player.dir == 'W')
 	{
-		game->diry = -1.0;
-		game->planex = -0.66;
+		info->diry = -1.0;
+		info->planex = -0.66;
 	}
 }
 
