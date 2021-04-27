@@ -17,12 +17,6 @@
 #include "../utils/utils.h"
 #include "../config/config.h"
 
-typedef struct		s_pair
-{
-	double	first;
-	int		second;
-}					t_pair;
-
 typedef struct	s_sprite
 {
 	double		x;
@@ -55,6 +49,9 @@ typedef struct	s_etc
 
 typedef struct	s_raysp
 {
+	int			*spriteorder;
+	double		*spritedistance;
+
 	double		spritex;
 	double		spritey;
 
@@ -71,6 +68,11 @@ typedef struct	s_raysp
 	int			spriteWidth;
 	int			drawStartx;
 	int			drawEndx;
+
+	int			texx;
+	int			texy;
+	int			d;
+	int			color;
 }				t_raysp;
 
 typedef struct	s_game

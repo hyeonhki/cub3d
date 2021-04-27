@@ -14,6 +14,12 @@
 
 void	wall_raycast(t_info *info, t_game *game)
 {
+//	set_etc(info);
+//	while (info->etc.x < info->config.width)
+//	{
+//		x++;
+//	}
+
 	for (int x = 0; x < info->config.width; x ++)
 	{
 		double camerax = 2 * x / (double)info->config.width - 1; 
