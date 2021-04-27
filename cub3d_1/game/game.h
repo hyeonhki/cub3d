@@ -75,6 +75,24 @@ typedef struct	s_raysp
 	int			color;
 }				t_raysp;
 
+typedef struct	s_rayw
+{
+	double	camerax;
+	double	raydirx;
+	double	raydiry;
+	int		mapx;
+	int		mapy;
+//	double	sidedistx;
+//	double	sidedisty;
+	double	deltadistx;
+	double	deltadisty;
+//	double	perpwalldist;
+	int		hit;
+	int		side;
+	int		stepx;
+	int		stepy;
+}				t_rayw;
+
 typedef struct	s_game
 {
 	//사용자의 위치
@@ -88,6 +106,7 @@ typedef struct	s_game
 	double	planey;
 
 	t_raysp	raysp;
+	t_rayw	rayw;
 }				t_game;
 
 typedef struct	s_info
@@ -122,8 +141,7 @@ void	game_init(t_info *info);
 
 void	set_etc(t_info *info);
 
-void	load_texture(t_info *info);
-void	load_image(t_info *info, int *texture, char *path, t_img *img);
+int		load_texture(t_info *info);
 
 void	config_to_game(t_info *info, t_map *map);
 

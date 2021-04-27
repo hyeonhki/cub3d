@@ -127,12 +127,13 @@ int		line_check(t_map *map, char *line, char **maptext)
 		return (read_color(map, line, &map->ce_color, &map->ce_check));
 	else if (*line >= ' ' && *line <= '9')
 	{
+		map->flag = 1;
 		if (!(map_order_check(map)))
 			return (0);
 		*maptext = ft_strjoin(*maptext, line);
 		*maptext = ft_strjoin(*maptext, "\n");
 	}
-	else if (*line == '\0')
+	else if (*line == '\0' && map->flag == 0)
 		return (1);
 	else
 		return (exit_error("Something wrong input at .cub\n"));

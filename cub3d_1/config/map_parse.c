@@ -24,6 +24,7 @@ void	reset_params(t_map *map)
 	map->fl_check = 0;
 	map->fl_color = 0;
 	map->ce_color = 0;
+	map->flag = 0;
 }
 
 void	map_reset(t_map *map)

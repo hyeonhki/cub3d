@@ -32,6 +32,7 @@ typedef struct	s_map
 {
 	int			i;
 	int			j;
+	int			flag;
 
 	int			**w_map;
 	int			**mask;

@@ -12,10 +12,11 @@
 
 #include "game.h"
 
-void	load_image(t_info *info, int *texture, char *path, t_img *img)
+int		load_image(t_info *info, int *texture, char *path, t_img *img)
 {
-	img->img = \
-	mlx_xpm_file_to_image(info->mlx, path, &img->img_width, &img->img_height);
+	if (!(img->img = \
+	mlx_xpm_file_to_image(info->mlx, path, &img->img_width, &img->img_height)))
+		return (exit_error("Wrong texture path!\n"));
 	img->data = \
 	(int *)mlx_get_data_addr(img->img, &img->bpp, &img->size_l, &img->endian);
 	while (info->etc.y < img->img_height)
@@ -31,15 +32,22 @@ void	load_image(t_info *info, int *texture, char *path, t_img *img)
 	}
 	set_etc(info);
 	mlx_destroy_image(info->mlx, img->img);
+	return (1);
 }
 
-void	load_texture(t_info *info)
+int		load_texture(t_info *info)
 {
 	t_img	img;
 
-	load_image(info, info->texture[0], info->map.no, &img);
-	load_image(info, info->texture[1], info->map.so, &img);
-	load_image(info, info->texture[2], info->map.we, &img);
-	load_image(info, info->texture[3], info->map.ea, &img);
-	load_image(info, info->texture[4], info->map.sp, &img);
+	if (!(load_image(info, info->texture[0], info->map.no, &img)))
+		return (0);
+	if (!(load_image(info, info->texture[1], info->map.so, &img)))
+		return (0);
+	if (!(load_image(info, info->texture[2], info->map.we, &img)))
+		return (0);
+	if (!(load_image(info, info->texture[3], info->map.ea, &img)))
+		return (0);
+	if (!(load_image(info, info->texture[4], info->map.sp, &img)))
+		return (0);
+	return (1);
 }

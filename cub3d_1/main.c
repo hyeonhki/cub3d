@@ -25,7 +25,8 @@ int main(int argc, char *argv[])
 		return (0);
 	config_to_game(&info, &info.map);
 	game_init(&info);
-	load_texture(&info);
+	if (!(load_texture(&info)))
+		return (0);
 	//기본 유지되는 hook (계산하고 그리기)
 	mlx_loop_hook(info.mlx, &main_loop, &info);
 	//이벤트를 받는 hook
