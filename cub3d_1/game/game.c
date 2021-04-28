@@ -14,7 +14,6 @@
 
 void	config_to_game(t_info *info, t_map *map)
 {
-	
 	info->config.width = map->width;
 	info->config.height = map->height;
 	info->game.posx = map->player.x + 0.5;

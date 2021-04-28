@@ -82,15 +82,29 @@ typedef struct	s_rayw
 	double	raydiry;
 	int		mapx;
 	int		mapy;
-//	double	sidedistx;
-//	double	sidedisty;
-	double	deltadistx;
-	double	deltadisty;
-//	double	perpwalldist;
-	int		hit;
-	int		side;
+
+	double	sidedistx;
+	double	sidedisty;
 	int		stepx;
 	int		stepy;
+
+	double	deltadistx;
+	double	deltadisty;
+	double	perpwalldist;
+	int		hit;
+	int		side;
+
+	int		lineheight;
+	int		drawstart;
+	int		drawend;
+
+	double	wallx;
+
+	int		texx;
+	double	step;
+	double	texpos;
+	int		texy;
+	int		color;
 }				t_rayw;
 
 typedef struct	s_game
@@ -129,9 +143,11 @@ typedef struct	s_info
 	int			**screen;
 	int			**texture;
 
-	double		zBuffer[1024];
+	double		zBuffer[1500];
 
 }				t_info;
+
+int		mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
 void	ready_screen(t_info *info);
 void	ready_texture(t_info *info);

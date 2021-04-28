@@ -12,6 +12,18 @@
 
 #include "cub3d.h"
 
+int	check_screen(t_info *info)
+{
+	int x;
+	int y;
+	mlx_get_screen_size(info->mlx, &x, &y);
+	if (x < info->config.width || y < info->config.height)
+		return (exit_error("RENDERING SIZE ERROR!\n"));
+	if (info->config.width <= 0 || info->config.height <= 0)
+		return (exit_error("RENDERING SIZE ERROR\n"));
+	return (1);
+}
+
 int main(int argc, char *argv[])
 {
 	t_info	info;
@@ -24,6 +36,7 @@ int main(int argc, char *argv[])
 	if (!config_map(&info.map, argv[1]))
 		return (0);
 	config_to_game(&info, &info.map);
+	check_screen(&info);
 	game_init(&info);
 	if (!(load_texture(&info)))
 		return (0);
