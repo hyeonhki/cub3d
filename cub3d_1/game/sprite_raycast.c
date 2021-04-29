@@ -14,10 +14,10 @@
 
 void	sort_sprites(t_game *game, int amount)
 {
-	int i;
-	int j;
+	int		i;
+	int		j;
 	int		tmp_order;
-	double tmp_distance;
+	double	tmp_distance;
 
 	i = 0;
 	while (i < amount)
@@ -93,7 +93,7 @@ void	sprite_screen(t_info *info, t_game *game, int i)
 	while (stripe < game->raysp.drawEndx)
 	{
 		game->raysp.texx =  (int)((256 * (stripe - (-game->raysp.spriteWidth / 2 + game->raysp.spriteScreenx)) * info->config.texwidth / game->raysp.spriteWidth) / 256);
-		if (game->raysp.transformy > 0 && stripe > 0 && stripe < info->config.width && game->raysp.transformy < info->zBuffer[stripe])
+		if (game->raysp.transformy > 0 && stripe > 0 && stripe < info->config.width && game->raysp.transformy < info->zbuffer[stripe])
 		{
 			y = game->raysp.drawStarty;
 			while (y < game->raysp.drawEndy)

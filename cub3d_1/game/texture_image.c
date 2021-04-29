@@ -39,13 +39,13 @@ int		load_texture(t_info *info)
 {
 	t_img	img;
 
-	if (!(load_image(info, info->texture[0], info->map.no, &img)))
+	if (!(load_image(info, info->texture[0], info->map.ea, &img)))
 		return (0);
-	if (!(load_image(info, info->texture[1], info->map.so, &img)))
+	if (!(load_image(info, info->texture[1], info->map.we, &img)))
 		return (0);
-	if (!(load_image(info, info->texture[2], info->map.we, &img)))
+	if (!(load_image(info, info->texture[2], info->map.so, &img)))
 		return (0);
-	if (!(load_image(info, info->texture[3], info->map.ea, &img)))
+	if (!(load_image(info, info->texture[3], info->map.no, &img)))
 		return (0);
 	if (!(load_image(info, info->texture[4], info->map.sp, &img)))
 		return (0);

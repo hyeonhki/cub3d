@@ -88,6 +88,7 @@ void	set_wall(t_info *info, t_game *game)
 void	texture_wall(t_info *info, t_game *game, int x)
 {
 	game->rayw.texx = (int)(game->rayw.wallx * (double)info->config.texwidth);
+	//좌우 대칭 텍스처 넣는 부분
 	if (game->rayw.side == 0 && game->rayw.raydirx > 0)
 		game->rayw.texx = info->config.texwidth - game->rayw.texx - 1;
 	if (game->rayw.side == 1 && game->rayw.raydiry < 0)
@@ -99,14 +100,13 @@ void	texture_wall(t_info *info, t_game *game, int x)
 	{
 		game->rayw.texy = (int)game->rayw.texpos & (info->config.texheight - 1); //갑자기 비트연산 &?
 		game->rayw.texpos += game->rayw.step;
-		// = info->texture[texNum][info->config.texheight * texy + texx];
-		if (game->rayw.side == 1 && game->rayw.raydiry > 0)
+		if (game->rayw.side == 1 && game->rayw.raydiry > 0) //동쪽
 			game->rayw.color = info->texture[0][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		else if (game->rayw.side == 1 && game->rayw.raydiry < 0)
+		else if (game->rayw.side == 1 && game->rayw.raydiry < 0) //서쪽
 			game->rayw.color = info->texture[1][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		else if (game->rayw.side == 0 && game->rayw.raydirx > 0)
+		else if (game->rayw.side == 0 && game->rayw.raydirx > 0) //남쪽
 			game->rayw.color = info->texture[2][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		if (game->rayw.side == 0 && game->rayw.raydirx < 0)
+		if (game->rayw.side == 0 && game->rayw.raydirx < 0) //북쪽
 			game->rayw.color = info->texture[3][info->config.texheight * game->rayw.texy + game->rayw.texx];
 		//특정 면을 어둡게 만들 수 있는 코드
 		//game->rayw.color = (game->rayw.color >> 1) & 8355711;
@@ -117,6 +117,7 @@ void	texture_wall(t_info *info, t_game *game, int x)
 
 void	wall_raycast(t_info *info, t_game *game)
 {
+	info->zbuffer = malloc(info->config.width * sizeof(double));
 	set_etc(info);
 	for (int x = 0; x < info->config.width; x ++)
 	{
@@ -128,6 +129,6 @@ void	wall_raycast(t_info *info, t_game *game)
 		//텍스처의 x좌표 나타내기
 		texture_wall(info, game, x);
 		//얘는 뭘까? 스프라이트로 연결되던데
-		info->zBuffer[x] = game->rayw.perpwalldist;
+		info->zbuffer[x] = game->rayw.perpwalldist;
 	}
 }

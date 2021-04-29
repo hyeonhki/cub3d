@@ -143,7 +143,7 @@ typedef struct	s_info
 	int			**screen;
 	int			**texture;
 
-	double		zBuffer[1500];
+	double		*zbuffer;
 
 }				t_info;
 
