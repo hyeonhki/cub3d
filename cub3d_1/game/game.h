@@ -49,30 +49,36 @@ typedef struct	s_etc
 
 typedef struct	s_raysp
 {
-	int			*spriteorder;
-	double		*spritedistance;
+	int			*sporder;
+	double		*spdistance;
 
-	double		spritex;
-	double		spritey;
+	double		spx;
+	double		spy;
 
-	double		invDet;
-	double		transformx;
-	double		transformy;
+	double		invdet;
+	double		transfx;
+	double		transfy;
 
-	int			spriteScreenx;
+	int			spscreenx;
 
-	int			vMoveScreen;
-	int			spriteHeight;
-	int			drawStarty;
-	int			drawEndy;
-	int			spriteWidth;
-	int			drawStartx;
-	int			drawEndx;
+	int			vmovescreen;
+	int			spheight;
+	int			drawstarty;
+	int			drawendy;
+	int			spwidth;
+	int			drawstartx;
+	int			drawendx;
 
 	int			texx;
 	int			texy;
 	int			d;
 	int			color;
+
+	int			vdiv;
+	int			udiv;
+	double		vmove;
+
+	int			point;
 }				t_raysp;
 
 typedef struct	s_rayw
