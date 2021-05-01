@@ -12,12 +12,6 @@
 
 #include "cub3d.h"
 
-int exit_hook(t_info *info)
-{
-	exit(EXIT_SUCCESS);
-	return(EXIT_SUCCESS);
-}
-
 void	calc(t_info *info, t_game *game)
 {
 	floor_ceiling_raycast(info);

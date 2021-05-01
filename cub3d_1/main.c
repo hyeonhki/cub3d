@@ -27,11 +27,12 @@ int	check_screen(t_info *info)
 int main(int argc, char *argv[])
 {
 	t_info	info;
-	int		save_opt;
 
 	info.save_opt = (argc > 2 && ft_strcmp(argv[2], "-save"));
 	if (argc < 2 || argc > 3)
-		return (exit_error("argc error"));
+		return (exit_error("argc error!"));
+	if (argc == 3 && info.save_opt != 1)
+		return (exit_error("wrong option!"));
 	config_init(&info.config);
 	if (!config_map(&info.map, argv[1]))
 		return (0);

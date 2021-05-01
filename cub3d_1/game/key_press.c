@@ -12,6 +12,12 @@
 
 #include "../cub3d.h"
 
+int		exit_hook(t_info *info)
+{
+	exit(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
+}
+
 void	ws_press(t_info *info, int i)
 {
 	t_game	*game;

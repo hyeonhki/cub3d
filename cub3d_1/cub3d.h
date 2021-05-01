@@ -25,9 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-void	draw(t_info *info);
-//void	calc(t_info *info);
 int		main_loop(t_info *info);
 int		key_press(int key, t_info *info);
 int		save_bmp(t_info *info);
