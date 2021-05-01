@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #ifndef GAME_H
-#define GAME_H
+# define GAME_H
 
-#include "../mlx/mlx.h"
-#include "../utils/utils.h"
-#include "../config/config.h"
+# include "../mlx/mlx.h"
+# include "../utils/utils.h"
+# include "../config/config.h"
 
 typedef struct	s_sprite
 {
@@ -83,55 +83,51 @@ typedef struct	s_raysp
 
 typedef struct	s_rayw
 {
-	double	camerax;
-	double	raydirx;
-	double	raydiry;
-	int		mapx;
-	int		mapy;
+	double		camerax;
+	double		raydirx;
+	double		raydiry;
+	int			mapx;
+	int			mapy;
 
-	double	sidedistx;
-	double	sidedisty;
-	int		stepx;
-	int		stepy;
+	double		sidedistx;
+	double		sidedisty;
+	int			stepx;
+	int			stepy;
 
-	double	deltadistx;
-	double	deltadisty;
-	double	perpwalldist;
-	int		hit;
-	int		side;
+	double		deltadistx;
+	double		deltadisty;
+	double		perpwalldist;
+	int			hit;
+	int			side;
 
-	int		lineheight;
-	int		drawstart;
-	int		drawend;
+	int			lineheight;
+	int			drawstart;
+	int			drawend;
 
-	double	wallx;
+	double		wallx;
 
-	int		texx;
-	double	step;
-	double	texpos;
-	int		texy;
-	int		color;
+	int			texx;
+	double		step;
+	double		texpos;
+	int			texy;
+	int			color;
 }				t_rayw;
 
 typedef struct	s_game
 {
-	//사용자의 위치
-	double	posx;
-	double	posy;
-	//플레이어의 초기 방향벡터 (카메라 평면의 수직)
-	double	dirx;
-	double	diry;
-	//카메라평면 (왜 X,Y 두개지?)
-	double	planex;
-	double	planey;
+	double		posx;
+	double		posy;
+	double		dirx;
+	double		diry;
+	double		planex;
+	double		planey;
 
-	t_raysp	raysp;
-	t_rayw	rayw;
+	t_raysp		raysp;
+	t_rayw		rayw;
 }				t_game;
 
 typedef struct	s_info
 {
-	//save opt
 	int			save_opt;
 
 	void		*mlx;
@@ -153,21 +149,21 @@ typedef struct	s_info
 
 }				t_info;
 
-int		mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
+int				mlx_get_screen_size(void *mlx_ptr, int *sizex, int *sizey);
 
-void	ready_screen(t_info *info);
-void	ready_texture(t_info *info);
-void	ready_image(t_info *info);
-void	check_sprite(t_info *info, t_map *map);
-void	game_init(t_info *info);
+void			ready_screen(t_info *info);
+void			ready_texture(t_info *info);
+void			ready_image(t_info *info);
+void			check_sprite(t_info *info, t_map *map);
+void			game_init(t_info *info);
 
-void	set_etc(t_info *info);
+void			set_etc(t_info *info);
 
-int		load_texture(t_info *info);
+int				load_texture(t_info *info);
 
-void	config_to_game(t_info *info, t_map *map);
+void			config_to_game(t_info *info, t_map *map);
 
-void	floor_ceiling_raycast(t_info *info);
-void	wall_raycast(t_info *info, t_game *game);
-void	sprite_raycast(t_info *info, t_game *game);
+void			floor_ceiling_raycast(t_info *info);
+void			wall_raycast(t_info *info, t_game *game);
+void			sprite_raycast(t_info *info, t_game *game);
 #endif

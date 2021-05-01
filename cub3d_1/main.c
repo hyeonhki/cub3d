@@ -14,8 +14,9 @@
 
 int	check_screen(t_info *info)
 {
-	int x;
-	int y;
+	int		x;
+	int		y;
+
 	mlx_get_screen_size(info->mlx, &x, &y);
 	if (x < info->config.width || y < info->config.height)
 		return (exit_error("RENDERING SIZE ERROR!\n"));
@@ -24,7 +25,7 @@ int	check_screen(t_info *info)
 	return (1);
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
 	t_info	info;
 
@@ -41,9 +42,7 @@ int main(int argc, char *argv[])
 	game_init(&info);
 	if (!(load_texture(&info)))
 		return (0);
-	//기본 유지되는 hook (계산하고 그리기)
 	mlx_loop_hook(info.mlx, &main_loop, &info);
-	//이벤트를 받는 hook
 	mlx_hook(info.win, X_EVENT_KEY_PRESS, 0, &key_press, &info);
 	mlx_hook(info.win, X_EVENT_EXIT, 0, &exit_hook, &info);
 	mlx_loop(info.mlx);

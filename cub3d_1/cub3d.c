@@ -21,8 +21,8 @@ void	calc(t_info *info, t_game *game)
 
 void	draw(t_info *info)
 {
-	int x;
-	int y;
+	int	x;
+	int	y;
 
 	y = 0;
 	while (y < info->config.height)
@@ -43,7 +43,7 @@ void	draw(t_info *info)
 	mlx_put_image_to_window(info->mlx, info->win, info->img.img, 0, 0);
 }
 
-int main_loop(t_info *info)
+int		main_loop(t_info *info)
 {
 	calc(info, &info->game);
 	draw(info);

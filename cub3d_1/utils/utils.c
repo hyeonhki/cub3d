@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyeonhki <hyeonhki@student.42seoul.kr      +#+  +:+       +#+        */
+/*   By: hyeonhki <hyeonhki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/07 10:02:48 by hyeonhki          #+#    #+#             */
 /*   Updated: 2021/04/07 10:02:49 by hyeonhki         ###   ########.fr       */
@@ -15,8 +15,8 @@
 
 void	ft_arraycpy(int *dest, int *src, unsigned int n)
 {
-	unsigned int i;
-	
+	unsigned int	i;
+
 	i = 0;
 	while (i < n)
 	{
@@ -25,14 +25,14 @@ void	ft_arraycpy(int *dest, int *src, unsigned int n)
 	}
 }
 
-int **ft_2d_malloc(int row, int column)
+int		**ft_2d_malloc(int row, int column)
 {
-	int **temp;
+	int				**temp;
+	int				i;
+
 	if (!(temp = (int **)malloc(sizeof(int *) * row)))
 		return (0);
-	int i;
-
-	i = 0 ;
+	i = 0;
 	while (i < row)
 	{
 		temp[i] = (int *)malloc(sizeof(int) * column);
@@ -43,8 +43,8 @@ int **ft_2d_malloc(int row, int column)
 
 void	ft_reset(int **buf, int row, int column)
 {
-	int		i;
-	int		j;
+	int				i;
+	int				j;
 
 	i = 0;
 	while (i < row)
@@ -59,9 +59,9 @@ void	ft_reset(int **buf, int row, int column)
 	}
 }
 
-int ft_strcmp(char *s1, char *s2)
+int		ft_strcmp(char *s1, char *s2)
 {
-	int i;
+	int				i;
 
 	i = 0;
 	while (s1[i] != 0 && (s1[i] == s2[i]))
@@ -71,10 +71,10 @@ int ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
-int exit_error(char *str)
+int		exit_error(char *str)
 {
 	printf("Error\n");
-	printf("%s\n",str);
+	printf("%s\n", str);
 	exit(EXIT_SUCCESS);
 	return (0);
 }
