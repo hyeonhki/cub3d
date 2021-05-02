@@ -12,7 +12,7 @@
 
 #include "../cub3d.h"
 
-int		exit_hook(t_info *info)
+int		exit_hook(void)
 {
 	exit(EXIT_SUCCESS);
 	return (EXIT_SUCCESS);
