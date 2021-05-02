@@ -1,0 +1,3 @@
+[submodule "minilibx_opengl_custom"]
+	path = minilibx_opengl_custom
+	url = https://gitlab.com/OctopusET/minilibx_opengl_custom.git
