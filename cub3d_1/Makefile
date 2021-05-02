@@ -7,4 +7,4 @@ all:
 	game/game.c game/ready_sprite.c game/game_ready.c game/texture_image.c \
 	game/raycast_floor_ceiling.c game/wall_raycast.c game/sprite_raycast.c \
 	game/key_press.c
-	./a.out maps/map2.cub -save
+	./a.out maps/map2.cub

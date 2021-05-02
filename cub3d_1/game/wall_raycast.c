@@ -12,60 +12,63 @@
 
 #include "game.h"
 
-static void	set_variables(t_info *info, t_game *game, int x)
+static void	set_variables(t_info *info, t_game *game, t_rayw *r, int x)
 {
-	game->rayw.camerax = 2 * x / (double)info->config.width - 1;
-	game->rayw.raydirx = game->dirx + game->planex * game->rayw.camerax;
-	game->rayw.raydiry =game->diry + game->planey * game->rayw.camerax; 
-	game->rayw.mapx = (int)game->posx;
-	game->rayw.mapy = (int)game->posy;
-	game->rayw.deltadistx = fabs(1 / game->rayw.raydirx);
-	game->rayw.deltadisty = fabs(1 / game->rayw.raydiry);
-	game->rayw.hit = 0;
-	game->rayw.stepx = 1;
-	game->rayw.sidedistx = (game->rayw.mapx + 1.0 - game->posx) * game->rayw.deltadistx;
-	if (game->rayw.raydirx < 0)
+	r->camerax = 2 * x / (double)info->config.width - 1;
+	r->raydirx = game->dirx + game->planex * r->camerax;
+	r->raydiry = game->diry + game->planey * r->camerax;
+	r->mapx = (int)game->posx;
+	r->mapy = (int)game->posy;
+	r->deltadistx = fabs(1 / r->raydirx);
+	r->deltadisty = fabs(1 / r->raydiry);
+	r->hit = 0;
+	r->stepx = 1;
+	r->sidedistx = (r->mapx + 1.0 - game->posx) * r->deltadistx;
+	if (r->raydirx < 0)
 	{
-		game->rayw.stepx = -1;
-		game->rayw.sidedistx = (game->posx - game->rayw.mapx) * game->rayw.deltadistx;
+		r->stepx = -1;
+		r->sidedistx = (game->posx - r->mapx) * r->deltadistx;
 	}
-	game->rayw.stepy = 1;
-	game->rayw.sidedisty = (game->rayw.mapy + 1.0 - game->posy) * game->rayw.deltadisty;
-	if (game->rayw.raydiry < 0)
+	r->stepy = 1;
+	r->sidedisty = (r->mapy + 1.0 - game->posy) * r->deltadisty;
+	if (r->raydiry < 0)
 	{
-		game->rayw.stepy = -1;
-		game->rayw.sidedisty = (game->posy - game->rayw.mapy) * game->rayw.deltadisty;
+		r->stepy = -1;
+		r->sidedisty = (game->posy - r->mapy) * r->deltadisty;
 	}
 }
 
-void	dda_algorithm(t_info *info, t_game *game)
+void		dda_algorithm(t_info *info, t_game *game, t_rayw *r)
 {
-	while (game->rayw.hit == 0)
+	while (r->hit == 0)
 	{
-		if (game->rayw.sidedistx < game->rayw.sidedisty)
+		if (r->sidedistx < r->sidedisty)
 		{
-			game->rayw.sidedistx += game->rayw.deltadistx;
-			game->rayw.mapx += game->rayw.stepx;
-			game->rayw.side = 0;
+			r->sidedistx += r->deltadistx;
+			r->mapx += r->stepx;
+			r->side = 0;
 		}
 		else
 		{
-			game->rayw.sidedisty += game->rayw.deltadisty;
-			game->rayw.mapy += game->rayw.stepy;
-			game->rayw.side = 1;
+			r->sidedisty += r->deltadisty;
+			r->mapy += r->stepy;
+			r->side = 1;
 		}
-		if (info->map.w_map[game->rayw.mapx][game->rayw.mapy] == '1')
-			game->rayw.hit = 1;
+		if (info->map.w_map[r->mapx][r->mapy] == '1')
+			r->hit = 1;
 	}
-	if (game->rayw.side == 0)
-		game->rayw.perpwalldist = (game->rayw.mapx - game->posx + (1 - game->rayw.stepx) / 2) / game->rayw.raydirx;
+	if (r->side == 0)
+		r->perpwalldist = \
+			(r->mapx - game->posx + (1 - r->stepx) / 2) / r->raydirx;
 	else
-		game->rayw.perpwalldist = (game->rayw.mapy - game->posy + (1 - game->rayw.stepy) / 2) / game->rayw.raydiry;
+		r->perpwalldist = \
+			(r->mapy - game->posy + (1 - r->stepy) / 2) / r->raydiry;
 }
 
-void	set_wall(t_info *info, t_game *game)
+void		set_wall(t_info *info, t_game *game)
 {
-	game->rayw.lineheight = (int)(info->config.height / game->rayw.perpwalldist);
+	game->rayw.lineheight = \
+		(int)(info->config.height / game->rayw.perpwalldist);
 	game->rayw.drawstart = -game->rayw.lineheight / 2 + info->config.height / 2;
 	if (game->rayw.drawstart < 0)
 		game->rayw.drawstart = 0;
@@ -73,49 +76,55 @@ void	set_wall(t_info *info, t_game *game)
 	if (game->rayw.drawend >= info->config.height)
 		game->rayw.drawend = info->config.height - 1;
 	if (game->rayw.side == 0)
-		game->rayw.wallx = game->posy + game->rayw.perpwalldist * game->rayw.raydiry;
+		game->rayw.wallx = \
+			game->posy + game->rayw.perpwalldist * game->rayw.raydiry;
 	else
-		game->rayw.wallx = game->posx + game->rayw.perpwalldist * game->rayw.raydirx;
+		game->rayw.wallx = \
+			game->posx + game->rayw.perpwalldist * game->rayw.raydirx;
 	game->rayw.wallx -= floor(game->rayw.wallx);
 }
 
-void	texture_wall(t_info *info, t_game *game, int x)
+void		texture_wall(t_info *info, t_config *c, t_rayw *r, int x)
 {
-	game->rayw.texx = (int)(game->rayw.wallx * (double)info->config.texwidth);
-	if (game->rayw.side == 0 && game->rayw.raydirx > 0)
-		game->rayw.texx = info->config.texwidth - game->rayw.texx - 1;
-	if (game->rayw.side == 1 && game->rayw.raydiry < 0)
-		game->rayw.texx = info->config.texwidth - game->rayw.texx - 1;
-	game->rayw.step = 1.0 * info->config.texheight / game->rayw.lineheight;
-	game->rayw.texpos = (game->rayw.drawstart - info->config.height / 2 + game->rayw.lineheight / 2) * game->rayw.step;
-	info->etc.y = game->rayw.drawstart;
-	while (info->etc.y < game->rayw.drawend)
+	r->texx = (int)(r->wallx * (double)c->texwidth);
+	if (r->side == 0 && r->raydirx > 0)
+		r->texx = c->texwidth - r->texx - 1;
+	if (r->side == 1 && r->raydiry < 0)
+		r->texx = c->texwidth - r->texx - 1;
+	r->step = 1.0 * c->texheight / r->lineheight;
+	r->texpos = (r->drawstart - c->height / 2 + r->lineheight / 2) * r->step;
+	info->etc.y = r->drawstart;
+	while (info->etc.y < r->drawend)
 	{
-		game->rayw.texy = (int)game->rayw.texpos & (info->config.texheight - 1);
-		game->rayw.texpos += game->rayw.step;
-		if (game->rayw.side == 1 && game->rayw.raydiry > 0)
-			game->rayw.color = info->texture[0][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		else if (game->rayw.side == 1 && game->rayw.raydiry < 0)
-			game->rayw.color = info->texture[1][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		else if (game->rayw.side == 0 && game->rayw.raydirx > 0)
-			game->rayw.color = info->texture[2][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		if (game->rayw.side == 0 && game->rayw.raydirx < 0)
-			game->rayw.color = info->texture[3][info->config.texheight * game->rayw.texy + game->rayw.texx];
-		info->screen[info->etc.y][x] = game->rayw.color;
+		r->texy = (int)r->texpos & (c->texheight - 1);
+		r->texpos += r->step;
+		if (r->side == 1 && r->raydiry > 0)
+			r->color = info->texture[0][c->texheight * r->texy + r->texx];
+		else if (r->side == 1 && r->raydiry < 0)
+			r->color = info->texture[1][c->texheight * r->texy + r->texx];
+		else if (r->side == 0 && r->raydirx > 0)
+			r->color = info->texture[2][c->texheight * r->texy + r->texx];
+		if (r->side == 0 && r->raydirx < 0)
+			r->color = info->texture[3][c->texheight * r->texy + r->texx];
+		info->screen[info->etc.y][x] = r->color;
 		info->etc.y++;
 	}
 }
 
-void	wall_raycast(t_info *info, t_game *game)
+void		wall_raycast(t_info *info, t_game *game)
 {
+	int		x;
+
+	x = 0;
 	info->zbuffer = malloc(info->config.width * sizeof(double));
 	set_etc(info);
-	for (int x = 0; x < info->config.width; x ++)
+	while (x < info->config.width)
 	{
-		set_variables(info, game, x);
-		dda_algorithm(info, game);
+		set_variables(info, game, &game->rayw, x);
+		dda_algorithm(info, game, &game->rayw);
 		set_wall(info, game);
-		texture_wall(info, game, x);
+		texture_wall(info, &info->config, &game->rayw, x);
 		info->zbuffer[x] = game->rayw.perpwalldist;
+		x++;
 	}
 }

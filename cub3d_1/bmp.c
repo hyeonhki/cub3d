@@ -15,16 +15,17 @@
 
 unsigned char	*bmp_fileheader(t_bmp *bmp, int height, int stride)
 {
-	int				filesize;
+	int						filesize;
+	static unsigned char	header[14];
+	int						i;
+
+	i = 0;
+	while (i <= 13)
+	{
+		header[i] = 0;
+		i++;
+	}
 	filesize = bmp->header_size + bmp->info_size + (stride * height);
-
-	static unsigned char header[] = {
-		0, 0,     /// signature
-		0, 0, 0, 0, /// image file size in bytes
-		0, 0, 0, 0, /// reserved
-		0, 0, 0, 0, /// start of pixel array
-	};
-
 	header[0] = (unsigned char)('B');
 	header[1] = (unsigned char)('M');
 	header[2] = (unsigned char)(filesize);
@@ -37,19 +38,15 @@ unsigned char	*bmp_fileheader(t_bmp *bmp, int height, int stride)
 
 unsigned char	*bmp_infoheader(t_bmp *bmp, int height, int width)
 {
-	static unsigned char info[] = {0, 0, 0, 0, /// header size
-		0, 0, 0, 0, /// image width
-		0, 0, 0, 0, /// image height
-		0, 0,     /// number of color planes
-		0, 0,     /// bits per pixel
-		0, 0, 0, 0, /// compression
-		0, 0, 0, 0, /// image size
-		0, 0, 0, 0, /// horizontal resolution
-		0, 0, 0, 0, /// vertical resolution
-		0, 0, 0, 0, /// colors in color table
-		0, 0, 0, 0, /// important color count
-	};
+	static unsigned char	info[40];
+	int						i;
 
+	i = 0;
+	while (i <= 39)
+	{
+		info[i] = 0;
+		i++;
+	}
 	info[0] = (unsigned char)(bmp->info_size);
 	info[4] = (unsigned char)(width);
 	info[5] = (unsigned char)(width >> 8);
@@ -68,8 +65,14 @@ void			generate_image(unsigned char *image, t_bmp *bmp)
 {
 	FILE			*imagefile;
 	int				i;
-	unsigned char	padding[3] = {0, 0, 0};
+	unsigned char	padding[3];
 
+	i = 0;
+	while (i < 3)
+	{
+		padding[i] = 0;
+		i++;
+	}
 	imagefile = fopen(bmp->filename, "wb");
 	bmp->fileheader = bmp_fileheader(bmp, bmp->height, bmp->stride);
 	fwrite(bmp->fileheader, 1, bmp->header_size, imagefile);
@@ -113,9 +116,9 @@ int				save_bmp(t_info *info)
 		j = 0;
 		while (j < bmp.width)
 		{
-			image[i][j][2] = (info->screen[i][j] >> 16) & 0xFF;///red
-			image[i][j][1] = (info->screen[i][j] >> 8) & 0xFF;///green
-			image[i][j][0] = (info->screen[i][j]) & 0xFF; ///blue
+			image[i][j][2] = (info->screen[i][j] >> 16) & 0xFF;
+			image[i][j][1] = (info->screen[i][j] >> 8) & 0xFF;
+			image[i][j][0] = (info->screen[i][j]) & 0xFF;
 			j++;
 		}
 		i++;
